@@ -1,3 +1,629 @@
-<html>
-<h1>Hola Gino</h1>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aprendizaje Automático No Supervisado - Curso Completo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.8em;
+            margin-bottom: 10px;
+            font-weight: 300;
+        }
+        
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .content {
+            padding: 40px;
+        }
+        
+        .module {
+            margin-bottom: 40px;
+            border: 2px solid #ecf0f1;
+            border-radius: 15px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .module:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        
+        .module-header {
+            padding: 25px;
+            color: white;
+            font-size: 1.4em;
+            font-weight: bold;
+            position: relative;
+        }
+        
+        .module-1 { background: linear-gradient(135deg, #3498db, #2980b9); }
+        .module-2 { background: linear-gradient(135deg, #e74c3c, #c0392b); }
+        .module-3 { background: linear-gradient(135deg, #f39c12, #e67e22); }
+        .module-4 { background: linear-gradient(135deg, #9b59b6, #8e44ad); }
+        
+        .module-content {
+            padding: 25px;
+            background: #fafafa;
+        }
+        
+        .topic {
+            margin-bottom: 25px;
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            border-left: 4px solid var(--accent-color);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .module-1 .topic { --accent-color: #3498db; }
+        .module-2 .topic { --accent-color: #e74c3c; }
+        .module-3 .topic { --accent-color: #f39c12; }
+        .module-4 .topic { --accent-color: #9b59b6; }
+        
+        .topic h3 {
+            color: var(--accent-color);
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+        
+        .subtopics {
+            list-style: none;
+            margin: 15px 0;
+        }
+        
+        .subtopics li {
+            padding: 8px 0;
+            border-bottom: 1px solid #ecf0f1;
+            padding-left: 20px;
+            position: relative;
+        }
+        
+        .subtopics li::before {
+            content: "▶";
+            position: absolute;
+            left: 0;
+            color: var(--accent-color);
+            font-size: 0.8em;
+        }
+        
+        .links-section {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .links-title {
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .links-title::before {
+            content: "🔗";
+        }
+        
+        .external-links {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .external-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            text-decoration: none;
+            color: #495057;
+            transition: all 0.3s ease;
+            font-size: 0.9em;
+        }
+        
+        .external-link:hover {
+            background: var(--accent-color);
+            color: white;
+            transform: translateX(5px);
+        }
+        
+        .link-youtube::before { content: "🎥"; }
+        .link-pdf::before { content: "📄"; }
+        .link-web::before { content: "🌐"; }
+        
+        .questions-section {
+            margin-top: 20px;
+            padding: 15px;
+            background: linear-gradient(135deg, #e8f5e8, #f0f8f0);
+            border-radius: 8px;
+            border: 2px solid #27ae60;
+        }
+        
+        .questions-title {
+            font-weight: bold;
+            color: #27ae60;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .questions-title::before {
+            content: "❓";
+        }
+        
+        .question-links {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+        }
+        
+        .question-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 15px;
+            background: white;
+            border: 2px solid #27ae60;
+            border-radius: 8px;
+            text-decoration: none;
+            color: #27ae60;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            justify-content: center;
+        }
+        
+        .question-link:hover {
+            background: #27ae60;
+            color: white;
+            transform: scale(1.05);
+        }
+        
+        .question-link::before {
+            content: "📋";
+        }
+        
+        .footer {
+            background: #2c3e50;
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .footer h3 {
+            margin-bottom: 15px;
+        }
+        
+        .progress-indicator {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: rgba(255,255,255,0.3);
+            z-index: 1000;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #3498db, #e74c3c, #f39c12, #9b59b6);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 10px;
+            }
+            
+            .header {
+                padding: 30px 20px;
+            }
+            
+            .header h1 {
+                font-size: 2.2em;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .question-links {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="progress-indicator">
+        <div class="progress-bar" id="progress-bar"></div>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1>🤖 Aprendizaje Automático No Supervisado</h1>
+            <p>Curso Completo con Teoría, Práctica y Preguntas Interactivas</p>
+        </div>
+        
+        <div class="content">
+            <!-- MÓDULO 1: INTRODUCCIÓN Y K-MEANS -->
+            <div class="module">
+                <div class="module-header module-1">
+                    📊 Módulo 1: Introducción al Aprendizaje No Supervisado y K-Means
+                </div>
+                <div class="module-content">
+                    
+                    <!-- Tema 1: Introducción -->
+                    <div class="topic">
+                        <h3>1. Introducción al Aprendizaje Automático No Supervisado</h3>
+                        <ul class="subtopics">
+                            <li>Términos clave en aprendizaje no supervisado</li>
+                            <li>Retos en el aprendizaje no supervisado</li>
+                            <li>Flujo de trabajo en el aprendizaje no supervisado</li>
+                            <li>Importancia del preprocesamiento</li>
+                            <li>Técnicas de transformación de datos</li>
+                            <li>Técnicas de discretización de datos</li>
+                            <li>Técnicas de codificación de datos categóricos</li>
+                        </ul>
+                        
+                        <div class="links-section">
+                            <div class="links-title">Enlaces de Referencia</div>
+                            <div class="external-links">
+                                <a href="https://www.atlantis-press.com/article/125983012.pdf" target="_blank" class="external-link link-pdf">
+                                    Unsupervised Learning Algorithms in Big Data: An Overview
+                                </a>
+                                <a href="https://oa.upm.es/75893/1/TFM_MIGUEL_ANGEL_GARCIA-GUTIERREZ_ESPINA.pdf" target="_blank" class="external-link link-pdf">
+                                    Study of Dimensionality Reduction Techniques
+                                </a>
+                                <a href="https://www.youtube.com/watch?v=FMkxSsfvMI4" target="_blank" class="external-link link-youtube">
+                                    Aprendizaje supervisado, no supervisado y por refuerzo
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Tema 2: K-Means -->
+                    <div class="topic">
+                        <h3>2. Fundamentos y Aplicaciones del Agrupamiento K-Means</h3>
+                        <ul class="subtopics">
+                            <li>Algoritmo K-Means</li>
+                            <li>¿Cómo elegir el número de clústeres?</li>
+                            <li>Implementar K-Means en Python</li>
+                            <li>Ventajas y desventajas del K-Means</li>
+                        </ul>
+                        
+                        <div class="links-section">
+                            <div class="links-title">Enlaces de Referencia</div>
+                            <div class="external-links">
+                                <a href="https://www.youtube.com/watch?v=KgJNIMe4yVc" target="_blank" class="external-link link-youtube">
+                                    Segmentación de clientes paso a paso
+                                </a>
+                                <a href="https://www.youtube.com/watch?v=C64Xyp3X-0U" target="_blank" class="external-link link-youtube">
+                                    K-Means en R
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Tema 3: Implementaciones K-Means -->
+                    <div class="topic">
+                        <h3>3. Diferentes Implementaciones de K-Means</h3>
+                        <ul class="subtopics">
+                            <li>Introducción y objetivos</li>
+                            <li>Lloyd's k-Means</li>
+                            <li>MacQueen's K-Means</li>
+                            <li>Hartingan-Wong K-Means</li>
+                            <li>Elkan's K-Means</li>
+                            <li>Soft K-Means / Fuzzy K-Means</li>
+                        </ul>
+                        
+                        <div class="links-section">
+                            <div class="links-title">Enlaces de Referencia</div>
+                            <div class="external-links">
+                                <a href="https://www.youtube.com/watch?v=X7co6-U4BJY" target="_blank" class="external-link link-youtube">
+                                    Ejemplo resuelto del algoritmo Fuzzy C-Means
+                                </a>
+                                <a href="https://www.youtube.com/watch?v=VhYt7nxOKKs" target="_blank" class="external-link link-youtube">
+                                    Algoritmo de agrupamiento C-Means
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- MÓDULO 2: MÉTODOS AVANZADOS -->
+            <div class="module">
+                <div class="module-header module-2">
+                    🔬 Módulo 2: Métodos Avanzados de Agrupamiento
+                </div>
+                <div class="module-content">
+                    
+                    <!-- Tema 4: Jerárquico -->
+                    <div class="topic">
+                        <h3>4. Agrupamiento Jerárquico</h3>
+                        <ul class="subtopics">
+                            <li>Tipos de clustering jerárquico</li>
+                            <li>Implementación en Python</li>
+                            <li>Comparación entre K-Means y clúster jerárquico</li>
+                        </ul>
+                        
+                        <div class="links-section">
+                            <div class="links-title">Enlaces de Referencia</div>
+                            <div class="external-links">
+                                <a href="https://www.datacamp.com/es/tutorial/introduction-hierarchical-clustering-python" target="_blank" class="external-link link-web">
+                                    Introducción al clustering jerárquico en Python
+                                </a>
+                                <a href="https://www.youtube.com/watch?v=jUAVEHXdjUI&t=4s" target="_blank" class="external-link link-youtube">
+                                    Análisis de clúster jerárquico en SPSS
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Tema 5: DBSCAN -->
+                    <div class="topic">
+                        <h3>5. Clustering Basado en Densidad DBSCAN</h3>
+                        <ul class="subtopics">
+                            <li>¿Por qué DBSCAN?</li>
+                            <li>Parametrización</li>
+                            <li>Pasos para seguir con el DBSCAN</li>
+                            <li>Métricas de evaluación DBSCAN</li>
+                            <li>Implementación en Python</li>
+                            <li>Comparación entre DBSCAN y K-Means</li>
+                        </ul>
+                        
+                        <div class="links-section">
+                            <div class="links-title">Enlaces de Referencia</div>
+                            <div class="external-links">
+                                <a href="https://www.youtube.com/watch?v=RDZUdRSDOok" target="_blank" class="external-link link-youtube">
+                                    Vídeo explicativo sobre DBSCAN
+                                </a>
+                                <a href="https://www.youtube.com/watch?v=VO_uzCU_nKw" target="_blank" class="external-link link-youtube">
+                                    Tutorial de codificación de DBSCAN en Python
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <div class="questions-section">
+                            <div class="questions-title">Preguntas Interactivas DBSCAN</div>
+                            <div class="question-links">
+                                <a href="dbscan/dbscan_q1.html" class="question-link">Pregunta 1: Tipo de Algoritmo</a>
+                                <a href="dbscan/dbscan_q2.html" class="question-link">Pregunta 2: Densidad vs Conectividad</a>
+                                <a href="dbscan/dbscan_q3.html" class="question-link">Pregunta 3: Efectos de Epsilon</a>
+                                <a href="dbscan/dbscan_q4.html" class="question-link">Pregunta 4: Sensibilidad a Parámetros</a>
+                                <a href="dbscan/dbscan_q5.html" class="question-link">Pregunta 5: Métrica de Distancia</a>
+                                <a href="dbscan/dbscan_q6.html" class="question-link">Pregunta 6: Conceptos Fundamentales</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- MÓDULO 3: REDUCCIÓN DE DIMENSIONALIDAD -->
+            <div class="module">
+                <div class="module-header module-3">
+                    📉 Módulo 3: Reducción de Dimensionalidad y Detección de Anomalías
+                </div>
+                <div class="module-content">
+                    
+                    <!-- Tema 6: PCA -->
+                    <div class="topic">
+                        <h3>6. Técnicas Lineales - Análisis de Componentes Principales (PCA)</h3>
+                        <ul class="subtopics">
+                            <li>¿Qué es PCA?</li>
+                            <li>¿Por qué PCA simplifica los datos para el clustering?</li>
+                            <li>Ventajas y desventajas de PCA</li>
+                            <li>¿Cómo evaluar y mejorar PCA?</li>
+                            <li>Implementación en Python</li>
+                        </ul>
+                        
+                        <div class="links-section">
+                            <div class="links-title">Enlaces de Referencia</div>
+                            <div class="external-links">
+                                <a href="https://www.youtube.com/watch?v=o2KzJdbOwMc" target="_blank" class="external-link link-youtube">
+                                    Vídeo explicativo sobre PCA
+                                </a>
+                                <a href="https://www.youtube.com/watch?v=8vH0WH7p39M" target="_blank" class="external-link link-youtube">
+                                    Diferencia entre análisis factorial (FA) y PCA
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Tema 7: Técnicas No Lineales -->
+                    <div class="topic">
+                        <h3>7. Técnicas No Lineales - t-SNE, MDS e ISOMAP</h3>
+                        <ul class="subtopics">
+                            <li>Entendiendo el t-SNE</li>
+                            <li>t-SNE vs. PCA</li>
+                            <li>Implementación del t-SNE en Python</li>
+                            <li>Multi-Dimensional Scaling (MDS)</li>
+                            <li>Isometric mapping (Isomap)</li>
+                            <li>Tabla comparativa entre las diferentes técnicas</li>
+                        </ul>
+                        
+                        <div class="links-section">
+                            <div class="links-title">Enlaces de Referencia</div>
+                            <div class="external-links">
+                                <a href="https://www.youtube.com/watch?v=NtvFoZORPB8&t=620s" target="_blank" class="external-link link-youtube">
+                                    Reducción de dimensiones: t-SNE
+                                </a>
+                                <a href="https://www.jmlr.org/papers/volume22/20-1061/20-1061.pdf" target="_blank" class="external-link link-pdf">
+                                    Cómo trabaja la reducción de dimensionalidad
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Tema 8: Detección de Anomalías -->
+                    <div class="topic">
+                        <h3>8. Detección de Anomalías</h3>
+                        <ul class="subtopics">
+                            <li>Métodos estadísticos para la detección de anomalías</li>
+                            <li>Algoritmos basados en distancia</li>
+                            <li>Algoritmos basados en densidad</li>
+                            <li>Isolation Forest</li>
+                        </ul>
+                        
+                        <div class="links-section">
+                            <div class="links-title">Enlaces de Referencia</div>
+                            <div class="external-links">
+                                <a href="https://www.linkedin.com/advice/1/what-most-common-unsupervised-anomaly-detection-qqdvf" target="_blank" class="external-link link-web">
+                                    Algoritmos comunes de detección de anomalías
+                                </a>
+                                <a href="https://www.tinybird.co/blog-posts/real-time-anomaly-detection" target="_blank" class="external-link link-web">
+                                    Detección de anomalías en tiempo real
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- MÓDULO 4: APRENDIZAJE POR REFUERZO -->
+            <div class="module">
+                <div class="module-header module-4">
+                    🎮 Módulo 4: Aprendizaje por Refuerzo
+                </div>
+                <div class="module-content">
+                    
+                    <!-- Tema 9: Introducción RL -->
+                    <div class="topic">
+                        <h3>9. Introducción al Aprendizaje por Refuerzo</h3>
+                        <ul class="subtopics">
+                            <li>Definición de agente</li>
+                            <li>Procesos de decisión de Markov (MDP)</li>
+                            <li>Aprendizaje por refuerzo y sus aplicaciones</li>
+                        </ul>
+                        
+                        <div class="links-section">
+                            <div class="links-title">Enlaces de Referencia</div>
+                            <div class="external-links">
+                                <a href="https://www.analyticsvidhya.com/blog/2021/02/introduction-to-reinforcement-learning-for-beginners/" target="_blank" class="external-link link-web">
+                                    ¿Qué es el aprendizaje por refuerzo?
+                                </a>
+                                <a href="https://aws.amazon.com/es/what-is/reinforcement-learning-from-human-feedback/" target="_blank" class="external-link link-web">
+                                    RLHF - Aprendizaje por refuerzo con retroalimentación humana
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Tema 10: Q-Learning -->
+                    <div class="topic">
+                        <h3>10. Q-Learning y Algoritmos Avanzados</h3>
+                        <ul class="subtopics">
+                            <li>Q-learning</li>
+                            <li>Deep Q Network (DQN)</li>
+                            <li>Algoritmos REINFORCE</li>
+                            <li>Proximal Policy Optimization (PPO)</li>
+                            <li>Implementación de aprendizaje por refuerzo en Python</li>
+                        </ul>
+                        
+                        <div class="links-section">
+                            <div class="links-title">Enlaces de Referencia</div>
+                            <div class="external-links">
+                                <a href="https://www.youtube.com/watch?v=EUrWGTCGzlA" target="_blank" class="external-link link-youtube">
+                                    ¿Qué es el aprendizaje por refuerzo y cómo trabaja?
+                                </a>
+                                <a href="https://www.youtube.com/watch?v=DcYLT37ImBY" target="_blank" class="external-link link-youtube">
+                                    Entrenando Pokemon con aprendizaje por refuerzo
+                                </a>
+                                <a href="https://spinningup.openai.com/en/latest/spinningup/rl_intro3.html" target="_blank" class="external-link link-web">
+                                    Introducción a la optimización de políticas
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <h3>🎓 Curso de Aprendizaje Automático No Supervisado</h3>
+            <p>Teoría completa, implementaciones prácticas y preguntas interactivas para dominar las técnicas de ML no supervisado</p>
+            <p style="margin-top: 15px; opacity: 0.7;">© 2024 - Curso educativo con recursos interactivos</p>
+        </div>
+    </div>
+
+    <script>
+        // Barra de progreso al hacer scroll
+        window.addEventListener('scroll', function() {
+            const scrollTop = window.pageYOffset;
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const scrollPercent = (scrollTop / docHeight) * 100;
+            document.getElementById('progress-bar').style.width = scrollPercent + '%';
+        });
+
+        // Smooth scroll para enlaces internos
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Efecto de carga
+        window.addEventListener('load', function() {
+            document.body.style.opacity = '0';
+            document.body.style.transition = 'opacity 0.5s ease';
+            setTimeout(() => {
+                document.body.style.opacity = '1';
+            }, 100);
+        });
+
+        console.log("🎓 Índice del curso de Aprendizaje Automático No Supervisado cargado!");
+        console.log("📊 4 módulos principales con teoría, práctica y preguntas interactivas");
+        console.log("🔗 Enlaces externos configurados para abrir en nueva pestaña");
+    </script>
+</body>
 </html>

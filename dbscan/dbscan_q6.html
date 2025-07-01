@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DBSCAN Pregunta 6: Conceptos Fundamentales</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #16a085, #2ecc71);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: 300;
+        }
+        .header p {
+            margin: 10px 0 0 0;
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+        .content {
+            padding: 40px;
+        }
+        .question-box {
+            background: #f8f9fa;
+            border: 3px solid #16a085;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            position: relative;
+        }
+        .question-box::before {
+            content: "❓";
+            position: absolute;
+            top: -15px;
+            left: 25px;
+            background: #16a085;
+            color: white;
+            padding: 10px;
+            border-radius: 50%;
+            font-size: 1.2em;
+        }
+        .question-box h2 {
+            color: #2c3e50;
+            margin-top: 0;
+            margin-left: 50px;
+        }
+        .answer-section {
+            background: #e8f5e8;
+            border: 3px solid #27ae60;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 30px 0;
+            position: relative;
+        }
+        .answer-section::before {
+            content: "✅";
+            position: absolute;
+            top: -15px;
+            left: 25px;
+            background: #27ae60;
+            color: white;
+            padding: 10px;
+            border-radius: 50%;
+            font-size: 1.2em;
+        }
+        .answer-section h3 {
+            color: #27ae60;
+            margin-top: 0;
+            margin-left: 50px;
+            font-size: 1.5em;
+        }
+        .demo-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px 0;
+            text-align: center;
+        }
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            background: white;
+            padding: 15px;
+            border-radius: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            min-width: 140px;
+        }
+        .control-group label {
+            font-weight: bold;
+            color: #2c3e50;
+            font-size: 14px;
+        }
+        .control-group input[type="range"] {
+            width: 120px;
+        }
+        .control-group input[type="number"] {
+            width: 60px;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .concepts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+        .concept-card {
+            border: 3px solid;
+            border-radius: 15px;
+            padding: 25px;
+            background: white;
+            text-align: center;
+        }
+        .core-card { 
+            border-color: #3498db; 
+            background: linear-gradient(135deg, #ebf3fd, #fff); 
+        }
+        .border-card { 
+            border-color: #f39c12; 
+            background: linear-gradient(135deg, #fef9e7, #fff); 
+        }
+        .noise-card { 
+            border-color: #e74c3c; 
+            background: linear-gradient(135deg, #fdf2f2, #fff); 
+        }
+        .concept-card h4 {
+            color: var(--accent-color);
+            margin-top: 0;
+            font-size: 1.4em;
+        }
+        .core-card { --accent-color: #3498db; }
+        .border-card { --accent-color: #f39c12; }
+        .noise-card { --accent-color: #e74c3c; }
+        .definition-box {
+            background: #2c3e50;
+            color: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            text-align: left;
+            font-size: 14px;
+        }
+        .stats-display {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 20px 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            text-align: center;
+        }
+        .stat-item {
+            padding: 10px;
+            border-radius: 8px;
+            background: #f8f9fa;
+        }
+        .stat-value {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .stat-label {
+            font-size: 0.9em;
+            color: #7f8c8d;
+        }
+        .highlight-box {
+            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+            border: 3px solid #fdcb6e;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 25px 0;
+            position: relative;
+        }
+        .highlight-box::before {
+            content: "💡";
+            position: absolute;
+            top: -15px;
+            left: 25px;
+            background: #fdcb6e;
+            padding: 10px;
+            border-radius: 50%;
+            font-size: 1.2em;
+        }
+        .highlight-box h4 {
+            margin-top: 0;
+            margin-left: 50px;
+            color: #d63031;
+        }
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 5px 12px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            font-size: 14px;
+        }
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>DBSCAN: Pregunta 6</h1>
+            <p>Conceptos Fundamentales: Core Points, Border Points y Noise</p>
+        </div>
+        
+        <div class="content">
+            <div class="question-box">
+                <h2>¿Cuáles son los conceptos fundamentales en DBSCAN?</h2>
+                <p><strong>Contexto:</strong> DBSCAN clasifica cada punto en una de tres categorías según su densidad local y relación con otros puntos.</p>
+            </div>
+
+            <div class="answer-section">
+                <h3>Los 3 Conceptos Fundamentales de DBSCAN</h3>
+                <p>DBSCAN clasifica todos los puntos de datos en exactamente <strong>tres categorías mutuamente exclusivas</strong> basándose en la densidad local y los parámetros ε (epsilon) y MinPts.</p>
+            </div>
+
+            <div class="concepts-grid">
+                <div class="concept-card core-card">
+                    <h4>🔵 Core Points (Puntos Núcleo)</h4>
+                    <div class="definition-box">
+                        Un punto p es CORE si:
+                        |N(p)| ≥ MinPts
+                        
+                        Donde N(p) son los vecinos
+                        de p dentro del radio ε
+                    </div>
+                    <p><strong>Características:</strong></p>
+                    <ul>
+                        <li>Tienen ≥ MinPts vecinos en radio ε</li>
+                        <li>Forman el "núcleo" de los clusters</li>
+                        <li>Pueden iniciar nuevos clusters</li>
+                        <li>Se representan como círculos grandes</li>
+                    </ul>
+                </div>
+
+                <div class="concept-card border-card">
+                    <h4>🟡 Border Points (Puntos Frontera)</h4>
+                    <div class="definition-box">
+                        Un punto p es BORDER si:
+                        |N(p)| < MinPts
+                        AND ∃ core point q ∈ N(p)
+                        
+                        Menos vecinos que MinPts
+                        pero cerca de un core point
+                    </div>
+                    <p><strong>Características:</strong></p>
+                    <ul>
+                        <li>Tienen < MinPts vecinos en radio ε</li>
+                        <li>Están en la vecindad de un core point</li>
+                        <li>Pertenecen a un cluster pero no lo inician</li>
+                        <li>Se representan como círculos medianos</li>
+                    </ul>
+                </div>
+
+                <div class="concept-card noise-card">
+                    <h4>🔴 Noise Points (Puntos Ruido)</h4>
+                    <div class="definition-box">
+                        Un punto p es NOISE si:
+                        |N(p)| < MinPts
+                        AND ∀ q ∈ N(p): q is not core
+                        
+                        Pocos vecinos y ningún
+                        core point cerca
+                    </div>
+                    <p><strong>Características:</strong></p>
+                    <ul>
+                        <li>Tienen < MinPts vecinos en radio ε</li>
+                        <li>NO están cerca de ningún core point</li>
+                        <li>Considerados outliers o anomalías</li>
+                        <li>Se representan como círculos pequeños</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="demo-section">
+                <h3>🎮 Demostración Interactiva de Conceptos</h3>
+                <p>Ajusta los parámetros y observa cómo cambian las clasificaciones:</p>
+                
+                <div class="controls">
+                    <div class="control-group">
+                        <label>Epsilon (ε)</label>
+                        <input type="range" id="eps-slider" min="30" max="80" value="50" step="5">
+                        <span id="eps-value">50</span>
+                    </div>
+                    <div class="control-group">
+                        <label>MinPts</label>
+                        <input type="range" id="minpts-slider" min="2" max="6" value="3" step="1">
+                        <span id="minpts-value">3</span>
+                    </div>
+                </div>
+                
+                <svg id="concepts-demo" width="650" height="400"></svg>
+                
+                <div class="stats-display">
+                    <div class="stat-item">
+                        <div class="stat-value" id="current-eps">50</div>
+                        <div class="stat-label">Epsilon</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="current-minpts">3</div>
+                        <div class="stat-label">MinPts</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="core-count">8</div>
+                        <div class="stat-label">Core Points</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="border-count">12</div>
+                        <div class="stat-label">Border Points</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="noise-count">5</div>
+                        <div class="stat-label">Noise Points</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #3498db;"></div>
+                    <span>Core Points</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #f39c12;"></div>
+                    <span>Border Points</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #e74c3c;"></div>
+                    <span>Noise Points</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: rgba(52,152,219,0.2); border: 2px dashed #3498db;"></div>
+                    <span>Radio ε</span>
+                </div>
+            </div>
+
+            <div class="highlight-box">
+                <h4>Conceptos Clave para Recordar</h4>
+                <ul>
+                    <li><strong>Densidad Local:</strong> Los conceptos se basan en cuántos vecinos tiene cada punto</li>
+                    <li><strong>Parámetros Críticos:</strong> ε determina "cercanía", MinPts determina "densidad suficiente"</li>
+                    <li><strong>Jerarquía:</strong> Core > Border > Noise en términos de importancia para clustering</li>
+                    <li><strong>Determinismo:</strong> Dado ε y MinPts, la clasificación es determinística</li>
+                    <li><strong>Clusters:</strong> Se forman conectando core points densamente alcanzables</li>
+                </ul>
+            </div>
+
+            <div class="answer-section">
+                <h3>📝 Resumen Completo</h3>
+                
+                <h4>🎯 Los Tres Conceptos Fundamentales:</h4>
+                <ol>
+                    <li><strong>Core Points:</strong> Puntos con densidad suficiente (≥ MinPts vecinos)</li>
+                    <li><strong>Border Points:</strong> Puntos con baja densidad pero cerca de core points</li>
+                    <li><strong>Noise Points:</strong> Puntos aislados que no califican para ningún cluster</li>
+                </ol>
+
+                <h4>🔄 Proceso de Clasificación:</h4>
+                <p>El algoritmo evalúa cada punto según su <em>densidad local</em> y <em>proximidad a puntos densos</em>, creando una clasificación completa y mutuamente exclusiva de todos los datos.</p>
+
+                <h4>🎨 Importancia Práctica:</h4>
+                <ul>
+                    <li><strong>Core points</strong> definen la estructura principal de los clusters</li>
+                    <li><strong>Border points</strong> extienden los clusters a regiones menos densas</li>
+                    <li><strong>Noise points</strong> identifican automáticamente outliers y anomalías</li>
+                </ul>
+
+                <p><strong>Esta clasificación tripartita es lo que hace a DBSCAN único</strong> entre los algoritmos de clustering, permitiendo detección automática de outliers y clusters de forma arbitraria.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Datos simples pero efectivos (25 puntos)
+        const data = [
+            // Cluster denso 1 - izquierda
+            {x: 150, y: 150, id: 1}, {x: 170, y: 160, id: 2}, {x: 160, y: 140, id: 3},
+            {x: 180, y: 155, id: 4}, {x: 145, y: 170, id: 5}, {x: 175, y: 145, id: 6},
+            {x: 155, y: 165, id: 7}, {x: 185, y: 150, id: 8},
+            
+            // Cluster denso 2 - derecha
+            {x: 450, y: 180, id: 9}, {x: 470, y: 190, id: 10}, {x: 460, y: 170, id: 11},
+            {x: 480, y: 185, id: 12}, {x: 445, y: 200, id: 13}, {x: 475, y: 175, id: 14},
+            {x: 465, y: 195, id: 15},
+            
+            // Cluster disperso 3 - centro
+            {x: 300, y: 100, id: 16}, {x: 320, y: 110, id: 17}, {x: 310, y: 90, id: 18},
+            {x: 330, y: 105, id: 19}, {x: 295, y: 120, id: 20},
+            
+            // Puntos aislados (noise)
+            {x: 100, y: 300, id: 21}, {x: 500, y: 100, id: 22}, {x: 250, y: 250, id: 23},
+            {x: 550, y: 300, id: 24}, {x: 80, y: 80, id: 25}
+        ];
+
+        // Función DBSCAN simplificada
+        function runDBSCAN(points, eps, minPts) {
+            const result = points.map(p => ({...p, neighbors: 0, type: 'noise'}));
+            
+            // Contar vecinos
+            result.forEach(point => {
+                const neighbors = result.filter(other => 
+                    other.id !== point.id && 
+                    Math.sqrt(Math.pow(point.x - other.x, 2) + Math.pow(point.y - other.y, 2)) <= eps
+                );
+                point.neighbors = neighbors.length;
+            });
+            
+            // Clasificar
+            result.forEach(point => {
+                if (point.neighbors >= minPts) {
+                    point.type = 'core';
+                } else {
+                    // Verificar si está cerca de un core point
+                    const nearCore = result.some(other => 
+                        other.neighbors >= minPts &&
+                        Math.sqrt(Math.pow(point.x - other.x, 2) + Math.pow(point.y - other.y, 2)) <= eps
+                    );
+                    point.type = nearCore ? 'border' : 'noise';
+                }
+            });
+            
+            return result;
+        }
+
+        // Función de visualización
+        function updateVisualization() {
+            const eps = parseInt(document.getElementById('eps-slider').value);
+            const minPts = parseInt(document.getElementById('minpts-slider').value);
+            
+            document.getElementById('eps-value').textContent = eps;
+            document.getElementById('minpts-value').textContent = minPts;
+            
+            const processedData = runDBSCAN(data, eps, minPts);
+            
+            const svg = d3.select("#concepts-demo");
+            svg.selectAll("*").remove();
+            
+            // Dibujar círculos de epsilon para core points
+            const corePoints = processedData.filter(p => p.type === 'core');
+            corePoints.forEach(point => {
+                svg.append("circle")
+                    .attr("cx", point.x)
+                    .attr("cy", point.y)
+                    .attr("r", eps)
+                    .attr("fill", "rgba(52,152,219,0.1)")
+                    .attr("stroke", "#3498db")
+                    .attr("stroke-width", 1)
+                    .attr("stroke-dasharray", "3,3")
+                    .attr("opacity", 0.6);
+            });
+            
+            // Dibujar puntos
+            svg.selectAll(".point")
+                .data(processedData)
+                .enter()
+                .append("circle")
+                .attr("class", "point")
+                .attr("cx", d => d.x)
+                .attr("cy", d => d.y)
+                .attr("r", d => {
+                    if (d.type === 'core') return 10;
+                    if (d.type === 'border') return 7;
+                    return 5;
+                })
+                .attr("fill", d => {
+                    if (d.type === 'core') return '#3498db';
+                    if (d.type === 'border') return '#f39c12';
+                    return '#e74c3c';
+                })
+                .attr("stroke", "#2c3e50")
+                .attr("stroke-width", 2)
+                .style("cursor", "pointer")
+                .on("mouseover", function(event, d) {
+                    d3.select(this).attr("r", d.type === 'core' ? 14 : d.type === 'border' ? 10 : 8);
+                    
+                    const tooltip = svg.append("g").attr("id", "tooltip");
+                    tooltip.append("rect")
+                        .attr("x", d.x + 15)
+                        .attr("y", d.y - 60)
+                        .attr("width", 140)
+                        .attr("height", 80)
+                        .attr("fill", "rgba(0,0,0,0.9)")
+                        .attr("rx", 8);
+                    
+                    tooltip.append("text")
+                        .attr("x", d.x + 25)
+                        .attr("y", d.y - 35)
+                        .attr("fill", "white")
+                        .attr("font-size", "12px")
+                        .attr("font-weight", "bold")
+                        .text(`Punto ${d.id}`);
+                    
+                    tooltip.append("text")
+                        .attr("x", d.x + 25)
+                        .attr("y", d.y - 20)
+                        .attr("fill", "white")
+                        .attr("font-size", "11px")
+                        .text(`Tipo: ${d.type.toUpperCase()}`);
+                    
+                    tooltip.append("text")
+                        .attr("x", d.x + 25)
+                        .attr("y", d.y - 5)
+                        .attr("fill", "white")
+                        .attr("font-size", "11px")
+                        .text(`Vecinos: ${d.neighbors}`);
+                    
+                    tooltip.append("text")
+                        .attr("x", d.x + 25)
+                        .attr("y", d.y + 10)
+                        .attr("fill", "white")
+                        .attr("font-size", "11px")
+                        .text(`Pos: (${d.x}, ${d.y})`);
+                })
+                .on("mouseout", function(event, d) {
+                    d3.select(this).attr("r", d.type === 'core' ? 10 : d.type === 'border' ? 7 : 5);
+                    svg.select("#tooltip").remove();
+                });
+            
+            // Actualizar estadísticas
+            const coreCount = processedData.filter(p => p.type === 'core').length;
+            const borderCount = processedData.filter(p => p.type === 'border').length;
+            const noiseCount = processedData.filter(p => p.type === 'noise').length;
+            
+            document.getElementById('current-eps').textContent = eps;
+            document.getElementById('current-minpts').textContent = minPts;
+            document.getElementById('core-count').textContent = coreCount;
+            document.getElementById('border-count').textContent = borderCount;
+            document.getElementById('noise-count').textContent = noiseCount;
+        }
+
+        // Inicialización
+        document.addEventListener('DOMContentLoaded', function() {
+            // Event listeners
+            document.getElementById('eps-slider').addEventListener('input', updateVisualization);
+            document.getElementById('minpts-slider').addEventListener('input', updateVisualization);
+            
+            // Crear visualización inicial
+            updateVisualization();
+            
+            console.log("Demo de conceptos DBSCAN cargada correctamente!");
+        });
+    </script>
+</body>
+</html>
