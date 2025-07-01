@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DBSCAN Pregunta 7: Valores Pequeños de Epsilon</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #c0392b, #e74c3c);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: 300;
+        }
+        .header p {
+            margin: 10px 0 0 0;
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+        .content {
+            padding: 40px;
+        }
+        .question-box {
+            background: #f8f9fa;
+            border: 3px solid #c0392b;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            position: relative;
+        }
+        .question-box::before {
+            content: "❓";
+            position: absolute;
+            top: -15px;
+            left: 25px;
+            background: #c0392b;
+            color: white;
+            padding: 10px;
+            border-radius: 50%;
+            font-size: 1.2em;
+        }
+        .question-box h2 {
+            color: #2c3e50;
+            margin-top: 0;
+            margin-left: 50px;
+        }
+        .answer-section {
+            background: #e8f5e8;
+            border: 3px solid #27ae60;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 30px 0;
+            position: relative;
+        }
+        .answer-section::before {
+            content: "✅";
+            position: absolute;
+            top: -15px;
+            left: 25px;
+            background: #27ae60;
+            color: white;
+            padding: 10px;
+            border-radius: 50%;
+            font-size: 1.2em;
+        }
+        .answer-section h3 {
+            color: #27ae60;
+            margin-top: 0;
+            margin-left: 50px;
+            font-size: 1.5em;
+        }
+        .demo-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px 0;
+            text-align: center;
+        }
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            background: white;
+            padding: 15px;
+            border-radius: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            min-width: 140px;
+        }
+        .control-group label {
+            font-weight: bold;
+            color: #2c3e50;
+            font-size: 14px;
+        }
+        .control-group input[type="range"] {
+            width: 120px;
+        }
+        .control-group input[type="number"] {
+            width: 60px;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .scenarios-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 25px;
+            margin: 30px 0;
+        }
+        .scenario-card {
+            border: 3px solid;
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            background: white;
+        }
+        .small-eps { 
+            border-color: #27ae60; 
+            background: linear-gradient(135deg, #e8f5e8, #fff); 
+        }
+        .medium-eps { 
+            border-color: #f39c12; 
+            background: linear-gradient(135deg, #fef9e7, #fff); 
+        }
+        .large-eps { 
+            border-color: #e74c3c; 
+            background: linear-gradient(135deg, #fdf2f2, #fff); 
+        }
+        .scenario-card h4 {
+            color: var(--accent-color);
+            margin-top: 0;
+            font-size: 1.3em;
+        }
+        .small-eps { --accent-color: #27ae60; }
+        .medium-eps { --accent-color: #f39c12; }
+        .large-eps { --accent-color: #e74c3c; }
+        .stats-display {
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 20px 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            text-align: center;
+        }
+        .stat-item {
+            padding: 10px;
+            border-radius: 8px;
+            background: #f8f9fa;
+        }
+        .stat-value {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        .stat-label {
+            font-size: 0.9em;
+            color: #7f8c8d;
+        }
+        .highlight-box {
+            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+            border: 3px solid #fdcb6e;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 25px 0;
+            position: relative;
+        }
+        .highlight-box::before {
+            content: "💡";
+            position: absolute;
+            top: -15px;
+            left: 25px;
+            background: #fdcb6e;
+            padding: 10px;
+            border-radius: 50%;
+            font-size: 1.2em;
+        }
+        .highlight-box h4 {
+            margin-top: 0;
+            margin-left: 50px;
+            color: #d63031;
+        }
+        .advantages-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 30px 0;
+        }
+        .advantage-card {
+            border: 2px solid #27ae60;
+            border-radius: 15px;
+            padding: 25px;
+            background: linear-gradient(135deg, #e8f5e8, #fff);
+        }
+        .advantage-card h5 {
+            color: #27ae60;
+            margin-top: 0;
+            font-size: 1.2em;
+            text-align: center;
+        }
+        .advantage-list {
+            list-style: none;
+            padding: 0;
+            margin: 15px 0;
+        }
+        .advantage-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #c8e6c9;
+            position: relative;
+            padding-left: 25px;
+        }
+        .advantage-list li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #27ae60;
+            font-weight: bold;
+        }
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 5px 12px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            font-size: 14px;
+        }
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        .practical-examples {
+            background: #dff0d8;
+            border: 2px solid #5cb85c;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 30px 0;
+        }
+        .example-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .example-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            border-left: 4px solid #27ae60;
+        }
+        .example-card h6 {
+            color: #27ae60;
+            margin-top: 0;
+            font-size: 1.1em;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>DBSCAN: Pregunta 7</h1>
+            <p>¿Cuándo son Preferibles los Valores Pequeños de Epsilon?</p>
+        </div>
+        
+        <div class="content">
+            <div class="question-box">
+                <h2>¿Cuándo son preferibles los valores pequeños de epsilon en DBSCAN?</h2>
+                <p><strong>Contexto:</strong> El parámetro epsilon (ε) determina el radio de vecindad. Valores más pequeños tienen ventajas específicas en ciertos escenarios de datos.</p>
+            </div>
+
+            <div class="answer-section">
+                <h3>Respuesta: Los valores pequeños de epsilon son preferibles en datos densos y precisos</h3>
+                <p><strong>Regla clave:</strong> "En general, <em>valores más pequeños de epsilon son preferibles</em>, ya que usualmente solo una pequeña fracción de puntos permanece dentro de esta distancia entre sí." Esta aproximación conservadora mejora la precisión del clustering.</p>
+            </div>
+
+            <div class="demo-section">
+                <h3>🎮 Demostración Interactiva: Impacto de Valores Pequeños de Epsilon</h3>
+                <p>Experimenta con diferentes valores de epsilon y observa cuándo valores pequeños son más efectivos:</p>
+                
+                <div class="controls">
+                    <div class="control-group">
+                        <label>Epsilon (ε)</label>
+                        <input type="range" id="eps-slider" min="15" max="75" value="25" step="5">
+                        <input type="number" id="eps-input" min="15" max="75" value="25" step="5">
+                    </div>
+                    <div class="control-group">
+                        <label>MinPts</label>
+                        <input type="range" id="minpts-slider" min="2" max="6" value="3" step="1">
+                        <input type="number" id="minpts-input" min="2" max="6" value="3" step="1">
+                    </div>
+                    <div class="control-group">
+                        <label>Tipo de Datos</label>
+                        <select id="data-type" style="padding: 5px; border-radius: 5px;">
+                            <option value="dense">Datos Densos</option>
+                            <option value="sparse">Datos Dispersos</option>
+                            <option value="mixed">Datos Mixtos</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <svg id="main-demo" width="650" height="400"></svg>
+                
+                <div class="stats-display">
+                    <div class="stat-item">
+                        <div class="stat-value" id="current-eps">25</div>
+                        <div class="stat-label">Epsilon Actual</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="current-minpts">3</div>
+                        <div class="stat-label">MinPts</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="total-clusters">3</div>
+                        <div class="stat-label">Clusters Formados</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="noise-points">4</div>
+                        <div class="stat-label">Puntos Ruido</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="precision-score">85%</div>
+                        <div class="stat-label">Precisión Estimada</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="data-coverage">72%</div>
+                        <div class="stat-label">Cobertura de Datos</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="legend">
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #3498db;"></div>
+                    <span>Core Points</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #f39c12;"></div>
+                    <span>Border Points</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #e74c3c;"></div>
+                    <span>Noise Points</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: rgba(52,152,219,0.2); border: 2px dashed #3498db;"></div>
+                    <span>Radio ε</span>
+                </div>
+            </div>
+
+            <div class="scenarios-grid">
+                <div class="scenario-card small-eps">
+                    <h4>🟢 Epsilon Pequeño (ε=20)</h4>
+                    <svg id="small-eps-demo" width="200" height="150"></svg>
+                    <p><strong>Ventajas:</strong></p>
+                    <ul style="text-align: left; font-size: 0.9em;">
+                        <li>Alta precisión</li>
+                        <li>Clusters bien definidos</li>
+                        <li>Menos fusiones incorrectas</li>
+                        <li>Mejor detección de outliers</li>
+                    </ul>
+                </div>
+
+                <div class="scenario-card medium-eps">
+                    <h4>🟡 Epsilon Medio (ε=40)</h4>
+                    <svg id="medium-eps-demo" width="200" height="150"></svg>
+                    <p><strong>Balance:</strong></p>
+                    <ul style="text-align: left; font-size: 0.9em;">
+                        <li>Precisión moderada</li>
+                        <li>Buena cobertura</li>
+                        <li>Algunas fusiones</li>
+                        <li>Ruido moderado</li>
+                    </ul>
+                </div>
+
+                <div class="scenario-card large-eps">
+                    <h4>🔴 Epsilon Grande (ε=60)</h4>
+                    <svg id="large-eps-demo" width="200" height="150"></svg>
+                    <p><strong>Problemas:</strong></p>
+                    <ul style="text-align: left; font-size: 0.9em;">
+                        <li>Baja precisión</li>
+                        <li>Fusiones incorrectas</li>
+                        <li>Pérdida de estructura</li>
+                        <li>Pocos outliers detectados</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="advantages-grid">
+                <div class="advantage-card">
+                    <h5>🎯 Ventajas de Epsilon Pequeño</h5>
+                    <ul class="advantage-list">
+                        <li><strong>Mayor Precisión:</strong> Menos falsos positivos en la formación de clusters</li>
+                        <li><strong>Clusters Conservadores:</strong> Solo agrupa puntos realmente cercanos</li>
+                        <li><strong>Mejor Separación:</strong> Mantiene distintos los clusters naturalmente separados</li>
+                        <li><strong>Detección Efectiva de Outliers:</strong> Puntos aislados se clasifican correctamente como ruido</li>
+                        <li><strong>Menor Sensibilidad al Ruido:</strong> Datos ruidosos no afectan tanto la formación de clusters</li>
+                        <li><strong>Estructura Más Fiel:</strong> Respeta mejor la estructura natural de los datos</li>
+                    </ul>
+                </div>
+
+                <div class="advantage-card">
+                    <h5>📊 Cuándo Usar Epsilon Pequeño</h5>
+                    <ul class="advantage-list">
+                        <li><strong>Datos Densos:</strong> Cuando los clusters naturales están muy concentrados</li>
+                        <li><strong>Alta Dimensionalidad:</strong> Para combatir la "maldición de dimensionalidad"</li>
+                        <li><strong>Detección de Anomalías:</strong> Cuando la identificación de outliers es crítica</li>
+                        <li><strong>Datos de Alta Calidad:</strong> Con mediciones precisas y poco ruido</li>
+                        <li><strong>Análisis Exploratorio:</strong> Para entender la estructura fina de los datos</li>
+                        <li><strong>Aplicaciones Críticas:</strong> Donde la precisión es más importante que la cobertura</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="highlight-box">
+                <h4>Principio Fundamental</h4>
+                <p><strong>La regla de Analytics Vidhya:</strong> "En general, valores más pequeños de epsilon son preferibles, ya que usualmente solo una pequeña fracción de puntos permanece dentro de esta distancia entre sí."</p>
+                <p><strong>¿Por qué funciona?</strong> Los valores pequeños de epsilon actúan como un filtro conservador que solo conecta puntos que están genuinamente cerca, evitando conexiones espurias que pueden crear clusters artificiales o fusionar clusters que deberían estar separados.</p>
+            </div>
+
+            <div class="practical-examples">
+                <h3>🏭 Ejemplos Prácticos de Epsilon Pequeño</h3>
+                <div class="example-grid">
+                    <div class="example-card">
+                        <h6>🏥 Diagnóstico Médico</h6>
+                        <p><strong>Contexto:</strong> Análisis de síntomas para diagnóstico</p>
+                        <p><strong>Epsilon pequeño:</strong> ε = 0.1</p>
+                        <p><strong>Beneficio:</strong> Evita clasificar incorrectamente enfermedades similares pero distintas</p>
+                        <p><strong>Resultado:</strong> Clusters más precisos de patologías específicas</p>
+                    </div>
+                    
+                    <div class="example-card">
+                        <h6>🔐 Detección de Fraude</h6>
+                        <p><strong>Contexto:</strong> Análisis de transacciones financieras</p>
+                        <p><strong>Epsilon pequeño:</strong> ε = 0.05</p>
+                        <p><strong>Beneficio:</strong> Identifica patrones muy específicos de fraude</p>
+                        <p><strong>Resultado:</strong> Menor tasa de falsos positivos</p>
+                    </div>
+                    
+                    <div class="example-card">
+                        <h6>📊 Segmentación de Clientes Premium</h6>
+                        <p><strong>Contexto:</strong> Análisis de comportamiento de compra</p>
+                        <p><strong>Epsilon pequeño:</strong> ε = 0.2</p>
+                        <p><strong>Beneficio:</strong> Identifica nichos muy específicos de mercado</p>
+                        <p><strong>Resultado:</strong> Estrategias de marketing más dirigidas</p>
+                    </div>
+                    
+                    <div class="example-card">
+                        <h6>🧬 Análisis Genómico</h6>
+                        <p><strong>Contexto:</strong> Agrupación de secuencias de ADN</p>
+                        <p><strong>Epsilon pequeño:</strong> ε = 0.01</p>
+                        <p><strong>Beneficio:</strong> Evita agrupar genes funcionalmente diferentes</p>
+                        <p><strong>Resultado:</strong> Análisis más preciso de expresión génica</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="answer-section">
+                <h3>📝 Resumen Ejecutivo</h3>
+                
+                <h4>🎯 Respuesta Directa:</h4>
+                <p>Los valores pequeños de epsilon son preferibles cuando se necesita <strong>alta precisión</strong> en lugar de alta cobertura, especialmente en datos densos donde solo una pequeña fracción de puntos está genuinamente cerca entre sí.</p>
+
+                <h4>⚖️ Principio Subyacente:</h4>
+                <p>Epsilon pequeño actúa como un <em>filtro conservador</em> que evita conexiones espurias y mantiene la integridad estructural de los datos, priorizando la calidad sobre la cantidad de conexiones.</p>
+
+                <h4>🔧 Aplicación Práctica:</h4>
+                <ul>
+                    <li><strong>Datos densos:</strong> Aprovecha la alta concentración natural</li>
+                    <li><strong>Aplicaciones críticas:</strong> Donde errores tienen alto costo</li>
+                    <li><strong>Detección de anomalías:</strong> Para identificar outliers genuinos</li>
+                    <li><strong>Análisis exploratorio:</strong> Para entender estructura fina</li>
+                </ul>
+
+                <h4>💡 Recomendación:</h4>
+                <p><strong>Empezar siempre con valores pequeños</strong> de epsilon e incrementar gradualmente hasta encontrar el balance óptimo entre precisión y cobertura para tu conjunto específico de datos.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Datasets para diferentes tipos de datos
+        const datasets = {
+            dense: [
+                // Cluster denso 1 - muy concentrado
+                {x: 120, y: 150, id: 1}, {x: 130, y: 160, id: 2}, {x: 125, y: 145, id: 3},
+                {x: 135, y: 155, id: 4}, {x: 115, y: 165, id: 5}, {x: 140, y: 150, id: 6},
+                {x: 128, y: 170, id: 7}, {x: 122, y: 140, id: 8}, {x: 138, y: 148, id: 9},
+                
+                // Cluster denso 2 - muy concentrado
+                {x: 420, y: 180, id: 10}, {x: 430, y: 190, id: 11}, {x: 425, y: 175, id: 12},
+                {x: 435, y: 185, id: 13}, {x: 415, y: 195, id: 14}, {x: 440, y: 180, id: 15},
+                {x: 428, y: 200, id: 16}, {x: 422, y: 170, id: 17}, {x: 438, y: 178, id: 18},
+                
+                // Cluster denso 3 - muy concentrado
+                {x: 270, y: 280, id: 19}, {x: 280, y: 290, id: 20}, {x: 275, y: 275, id: 21},
+                {x: 285, y: 285, id: 22}, {x: 265, y: 295, id: 23}, {x: 290, y: 280, id: 24},
+                
+                // Pocos outliers genuinos
+                {x: 50, y: 50, id: 25}, {x: 550, y: 100, id: 26}, {x: 100, y: 350, id: 27}
+            ],
+            
+            sparse: [
+                // Clusters dispersos
+                {x: 100, y: 120, id: 1}, {x: 160, y: 180, id: 2}, {x: 140, y: 150, id: 3},
+                {x: 180, y: 140, id: 4}, {x: 120, y: 200, id: 5}, {x: 200, y: 160, id: 6},
+                
+                {x: 350, y: 150, id: 7}, {x: 410, y: 210, id: 8}, {x: 380, y: 180, id: 9},
+                {x: 420, y: 150, id: 10}, {x: 360, y: 220, id: 11}, {x: 440, y: 190, id: 12},
+                
+                {x: 250, y: 280, id: 13}, {x: 310, y: 340, id: 14}, {x: 280, y: 310, id: 15},
+                {x: 320, y: 280, id: 16}, {x: 260, y: 350, id: 17}, {x: 340, y: 320, id: 18},
+                
+                // Muchos puntos dispersos
+                {x: 80, y: 80, id: 19}, {x: 500, y: 90, id: 20}, {x: 150, y: 350, id: 21},
+                {x: 550, y: 300, id: 22}, {x: 480, y: 320, id: 23}, {x: 90, y: 280, id: 24}
+            ],
+            
+            mixed: [
+                // Cluster muy denso
+                {x: 120, y: 150, id: 1}, {x: 130, y: 160, id: 2}, {x: 125, y: 145, id: 3},
+                {x: 135, y: 155, id: 4}, {x: 115, y: 165, id: 5}, {x: 140, y: 150, id: 6},
+                
+                // Cluster moderadamente disperso
+                {x: 350, y: 150, id: 7}, {x: 410, y: 210, id: 8}, {x: 380, y: 180, id: 9},
+                {x: 420, y: 150, id: 10}, {x: 360, y: 220, id: 11},
+                
+                // Cluster muy disperso
+                {x: 200, y: 280, id: 12}, {x: 280, y: 340, id: 13}, {x: 250, y: 310, id: 14},
+                {x: 320, y: 280, id: 15},
+                
+                // Outliers mezclados
+                {x: 80, y: 80, id: 16}, {x: 500, y: 90, id: 17}, {x: 150, y: 350, id: 18},
+                {x: 550, y: 300, id: 19}, {x: 480, y: 50, id: 20}, {x: 50, y: 280, id: 21}
+            ]
+        };
+
+        // Algoritmo DBSCAN
+        function runDBSCAN(points, eps, minPts) {
+            const result = points.map(p => ({...p, cluster: 'noise', neighbors: 0, isCore: false}));
+            
+            // Calcular vecinos para cada punto
+            result.forEach(point => {
+                const neighbors = result.filter(other => 
+                    other.id !== point.id && 
+                    Math.sqrt(Math.pow(point.x - other.x, 2) + Math.pow(point.y - other.y, 2)) <= eps
+                );
+                point.neighbors = neighbors.length;
+                point.isCore = neighbors.length >= minPts;
+            });
+            
+            // Formar clusters usando expansión desde core points
+            let clusterIndex = 1;
+            const visited = new Set();
+            
+            result.forEach(point => {
+                if (point.isCore && !visited.has(point.id)) {
+                    const stack = [point];
+                    point.cluster = `cluster${clusterIndex}`;
+                    visited.add(point.id);
+                    
+                    while (stack.length > 0) {
+                        const current = stack.pop();
+                        const neighbors = result.filter(other => 
+                            other.id !== current.id && 
+                            Math.sqrt(Math.pow(current.x - other.x, 2) + Math.pow(current.y - other.y, 2)) <= eps
+                        );
+                        
+                        neighbors.forEach(neighbor => {
+                            if (!visited.has(neighbor.id)) {
+                                visited.add(neighbor.id);
+                                neighbor.cluster = `cluster${clusterIndex}`;
+                                if (neighbor.isCore) {
+                                    stack.push(neighbor);
+                                }
+                            }
+                        });
+                    }
+                    clusterIndex++;
+                }
+            });
+            
+            return result;
+        }
+
+        // Función para calcular métricas de calidad
+        function calculateQualityMetrics(points, eps) {
+            const totalPoints = points.length;
+            const clusteredPoints = points.filter(p => p.cluster !== 'noise').length;
+            const coverage = Math.round((clusteredPoints / totalPoints) * 100);
+            
+            // Estimación de precisión basada en epsilon
+            let precision;
+            if (eps <= 25) precision = Math.min(95, 75 + eps);
+            else if (eps <= 50) precision = Math.max(60, 100 - eps);
+            else precision = Math.max(30, 80 - eps);
+            
+            return { coverage, precision: Math.round(precision) };
+        }
+
+        // Función para crear visualización
+        function createVisualization(svgId, points, eps, minPts, scale = 1) {
+            const svg = d3.select(`#${svgId}`);
+            svg.selectAll("*").remove();
+            
+            const colors = {
+                cluster1: '#3498db', cluster2: '#e74c3c', cluster3: '#f39c12',
+                cluster4: '#9b59b6', cluster5: '#1abc9c', noise: '#95a5a6'
+            };
+            
+            console.log(`🎨 Creando visualización ${svgId} con eps=${eps}, minPts=${minPts}, ${points.length} puntos`);
+            
+            // Mostrar círculos de epsilon para core points (solo en demo principal)
+            if (scale === 1) {
+                const corePoints = points.filter(p => p.isCore);
+                console.log(`🔵 Core points: ${corePoints.length}`);
+                
+                // Mostrar máximo 5 círculos para no sobrecargar
+                const samplesToShow = Math.min(5, corePoints.length);
+                for (let i = 0; i < samplesToShow; i++) {
+                    const point = corePoints[i];
+                    svg.append("circle")
+                        .attr("cx", point.x)
+                        .attr("cy", point.y)
+                        .attr("r", eps)
+                        .attr("fill", "rgba(52,152,219,0.06)")
+                        .attr("stroke", "#3498db")
+                        .attr("stroke-width", 1.5)
+                        .attr("stroke-dasharray", "4,4")
+                        .attr("opacity", 0.8);
+                }
+            }
+            
+            // Dibujar puntos
+            svg.selectAll(".point")
+                .data(points)
+                .enter()
+                .append("circle")
+                .attr("class", "point")
+                .attr("cx", d => d.x * scale)
+                .attr("cy", d => d.y * scale)
+                .attr("r", d => {
+                    if (d.isCore) return 8 * scale;
+                    if (d.cluster !== 'noise') return 6 * scale;
+                    return 4 * scale;
+                })
+                .attr("fill", d => colors[d.cluster] || colors.noise)
+                .attr("stroke", "#2c3e50")
+                .attr("stroke-width", 1.5 * scale)
+                .style("cursor", scale === 1 ? "pointer" : "default");
+            
+            // Agregar tooltips solo al gráfico principal
+            if (scale === 1) {
+                svg.selectAll(".point")
+                    .on("mouseover", function(event, d) {
+                        d3.select(this).attr("r", d.isCore ? 12 : d.cluster !== 'noise' ? 9 : 7);
+                        
+                        const tooltip = svg.append("g").attr("id", "tooltip");
+                        tooltip.append("rect")
+                            .attr("x", d.x + 15)
+                            .attr("y", d.y - 60)
+                            .attr("width", 150)
+                            .attr("height", 80)
+                            .attr("fill", "rgba(0,0,0,0.9)")
+                            .attr("rx", 8);
+                        
+                        tooltip.append("text")
+                            .attr("x", d.x + 25)
+                            .attr("y", d.y - 35)
+                            .attr("fill", "white")
+                            .attr("font-size", "12px")
+                            .attr("font-weight", "bold")
+                            .text(`Punto ${d.id}`);
+                        
+                        tooltip.append("text")
+                            .attr("x", d.x + 25)
+                            .attr("y", d.y - 20)
+                            .attr("fill", "white")
+                            .attr("font-size", "11px")
+                            .text(`Tipo: ${d.isCore ? 'Core' : d.cluster !== 'noise' ? 'Border' : 'Noise'}`);
+                        
+                        tooltip.append("text")
+                            .attr("x", d.x + 25)
+                            .attr("y", d.y - 5)
+                            .attr("fill", "white")
+                            .attr("font-size", "11px")
+                            .text(`Vecinos: ${d.neighbors}`);
+                        
+                        tooltip.append("text")
+                            .attr("x", d.x + 25)
+                            .attr("y", d.y + 10)
+                            .attr("fill", "white")
+                            .attr("font-size", "11px")
+                            .text(`Cluster: ${d.cluster}`);
+                    })
+                    .on("mouseout", function(event, d) {
+                        d3.select(this).attr("r", d.isCore ? 8 : d.cluster !== 'noise' ? 6 : 4);
+                        svg.select("#tooltip").remove();
+                    });
+            }
+            
+            console.log(`✅ Visualización ${svgId} completada`);
+            return points;
+        }
+
+        // Función para actualizar la demostración principal
+        function updateMainDemo() {
+            const eps = parseInt(document.getElementById('eps-slider').value);
+            const minPts = parseInt(document.getElementById('minpts-slider').value);
+            const dataType = document.getElementById('data-type').value;
+            
+            console.log(`🔄 Actualizando demo principal: eps=${eps}, minPts=${minPts}, dataType=${dataType}`);
+            
+            // Sincronizar controles
+            document.getElementById('eps-input').value = eps;
+            document.getElementById('minpts-input').value = minPts;
+            
+            // Obtener dataset según el tipo seleccionado
+            const currentData = datasets[dataType];
+            const processedData = runDBSCAN(currentData, eps, minPts);
+            
+            // Crear visualización principal
+            createVisualization('main-demo', processedData, eps, minPts, 1);
+            
+            // Calcular estadísticas
+            const clusterCount = new Set(processedData.filter(p => p.cluster !== 'noise').map(p => p.cluster)).size;
+            const noiseCount = processedData.filter(p => p.cluster === 'noise').length;
+            const coreCount = processedData.filter(p => p.isCore).length;
+            const metrics = calculateQualityMetrics(processedData, eps);
+            
+            console.log(`📊 Estadísticas: ${clusterCount} clusters, ${noiseCount} noise, ${coreCount} core, ${metrics.precision}% precision`);
+            
+            // Actualizar estadísticas en la UI
+            document.getElementById('current-eps').textContent = eps;
+            document.getElementById('current-minpts').textContent = minPts;
+            document.getElementById('total-clusters').textContent = clusterCount;
+            document.getElementById('noise-points').textContent = noiseCount;
+            document.getElementById('precision-score').textContent = metrics.precision + '%';
+            document.getElementById('data-coverage').textContent = metrics.coverage + '%';
+        }
+
+        // Función para crear las demostraciones de comparación
+        function createComparisonDemos() {
+            console.log("🎨 Creando demos de comparación...");
+            
+            // Usar datos densos para la comparación
+            const denseData = datasets.dense;
+            
+            // Demo con epsilon pequeño (óptimo para datos densos)
+            const smallEpsData = runDBSCAN([...denseData], 20, 3);
+            createVisualization('small-eps-demo', smallEpsData, 20, 3, 0.6);
+            
+            // Demo con epsilon medio
+            const mediumEpsData = runDBSCAN([...denseData], 40, 3);
+            createVisualization('medium-eps-demo', mediumEpsData, 40, 3, 0.6);
+            
+            // Demo con epsilon grande (problemático)
+            const largeEpsData = runDBSCAN([...denseData], 60, 3);
+            createVisualization('large-eps-demo', largeEpsData, 60, 3, 0.6);
+            
+            console.log("✅ Demos de comparación completados");
+        }
+
+        // Inicialización cuando el DOM esté listo
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log("🚀 Inicializando DBSCAN Pregunta 7...");
+            
+            // Crear demos de comparación estáticos
+            createComparisonDemos();
+            
+            // Configurar event listeners para controles
+            const epsSlider = document.getElementById('eps-slider');
+            const epsInput = document.getElementById('eps-input');
+            const minptsSlider = document.getElementById('minpts-slider');
+            const minptsInput = document.getElementById('minpts-input');
+            const dataTypeSelect = document.getElementById('data-type');
+            
+            // Event listeners para epsilon
+            epsSlider.addEventListener('input', function() {
+                epsInput.value = this.value;
+                updateMainDemo();
+            });
+            
+            epsSlider.addEventListener('change', function() {
+                epsInput.value = this.value;
+                updateMainDemo();
+            });
+            
+            epsInput.addEventListener('input', function() {
+                if (this.value >= 15 && this.value <= 75) {
+                    epsSlider.value = this.value;
+                    updateMainDemo();
+                }
+            });
+            
+            epsInput.addEventListener('change', function() {
+                if (this.value >= 15 && this.value <= 75) {
+                    epsSlider.value = this.value;
+                    updateMainDemo();
+                }
+            });
+            
+            // Event listeners para MinPts
+            minptsSlider.addEventListener('input', function() {
+                minptsInput.value = this.value;
+                updateMainDemo();
+            });
+            
+            minptsSlider.addEventListener('change', function() {
+                minptsInput.value = this.value;
+                updateMainDemo();
+            });
+            
+            minptsInput.addEventListener('input', function() {
+                if (this.value >= 2 && this.value <= 6) {
+                    minptsSlider.value = this.value;
+                    updateMainDemo();
+                }
+            });
+            
+            minptsInput.addEventListener('change', function() {
+                if (this.value >= 2 && this.value <= 6) {
+                    minptsSlider.value = this.value;
+                    updateMainDemo();
+                }
+            });
+            
+            // Event listener para tipo de datos
+            dataTypeSelect.addEventListener('change', updateMainDemo);
+            
+            // Crear demo inicial
+            updateMainDemo();
+            
+            console.log("✅ DBSCAN Pregunta 7 inicializada correctamente!");
+        });
+    </script>
+</body>
+</html>
