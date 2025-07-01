@@ -1,0 +1,968 @@
+/* Estilos comunes para todas las preguntas DBSCAN */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+
+.header {
+    color: white;
+    padding: 30px;
+    text-align: center;
+}
+
+/* Headers específicos por pregunta */
+.header.q1 {
+    background: linear-gradient(135deg, #2c3e50, #3498db);
+}
+
+.header.q2 {
+    background: linear-gradient(135deg, #8e44ad, #3498db);
+}
+
+.header.q3 {
+    background: linear-gradient(135deg, #e74c3c, #f39c12);
+}
+
+.header.q4 {
+    background: linear-gradient(135deg, #e67e22, #d35400);
+}
+
+.header.q5 {
+    background: linear-gradient(135deg, #9b59b6, #8e44ad);
+}
+
+.header.q6 {
+    background: linear-gradient(135deg, #16a085, #2ecc71);
+}
+
+.header.q7 {
+    background: linear-gradient(135deg, #c0392b, #e74c3c);
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 2.5em;
+    font-weight: 300;
+}
+
+.header p {
+    margin: 10px 0 0 0;
+    opacity: 0.9;
+    font-size: 1.1em;
+}
+
+.content {
+    padding: 40px;
+}
+
+.question-box {
+    background: #f8f9fa;
+    border-radius: 15px;
+    padding: 25px;
+    margin-bottom: 30px;
+    position: relative;
+}
+
+/* Question boxes específicos por pregunta */
+.question-box.q1 {
+    border: 3px solid #3498db;
+}
+
+.question-box.q1::before {
+    background: #3498db;
+}
+
+.question-box.q2 {
+    border: 3px solid #8e44ad;
+}
+
+.question-box.q2::before {
+    background: #8e44ad;
+}
+
+.question-box.q3 {
+    border: 3px solid #e74c3c;
+}
+
+.question-box.q3::before {
+    background: #e74c3c;
+}
+
+.question-box.q4 {
+    border: 3px solid #e67e22;
+}
+
+.question-box.q4::before {
+    background: #e67e22;
+}
+
+.question-box.q5 {
+    border: 3px solid #9b59b6;
+}
+
+.question-box.q5::before {
+    background: #9b59b6;
+}
+
+.question-box.q6 {
+    border: 3px solid #16a085;
+}
+
+.question-box.q6::before {
+    background: #16a085;
+}
+
+.question-box.q7 {
+    border: 3px solid #c0392b;
+}
+
+.question-box.q7::before {
+    background: #c0392b;
+}
+
+.question-box::before {
+    content: "❓";
+    position: absolute;
+    top: -15px;
+    left: 25px;
+    color: white;
+    padding: 10px;
+    border-radius: 50%;
+    font-size: 1.2em;
+}
+
+.question-box h2 {
+    color: #2c3e50;
+    margin-top: 0;
+    margin-left: 50px;
+}
+
+.answer-section {
+    background: #e8f5e8;
+    border: 3px solid #27ae60;
+    border-radius: 15px;
+    padding: 25px;
+    margin: 30px 0;
+    position: relative;
+}
+
+.answer-section::before {
+    content: "✅";
+    position: absolute;
+    top: -15px;
+    left: 25px;
+    background: #27ae60;
+    color: white;
+    padding: 10px;
+    border-radius: 50%;
+    font-size: 1.2em;
+}
+
+.answer-section h3 {
+    color: #27ae60;
+    margin-top: 0;
+    margin-left: 50px;
+    font-size: 1.5em;
+}
+
+.comparison-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px;
+    margin: 30px 0;
+}
+
+.algorithm-card {
+    border: 2px solid #ecf0f1;
+    border-radius: 15px;
+    padding: 25px;
+    text-align: center;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.algorithm-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    background: var(--accent-color);
+}
+
+.algorithm-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+.density-based { --accent-color: #e74c3c; background: #fdf2f2; }
+.partitioning { --accent-color: #3498db; background: #f2f8fd; }
+.hierarchical { --accent-color: #f39c12; background: #fdf8f2; }
+
+.algorithm-card h4 {
+    color: var(--accent-color);
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 1.3em;
+}
+
+.features-list {
+    list-style: none;
+    padding: 0;
+    margin: 20px 0;
+}
+
+.features-list li {
+    padding: 8px 0;
+    border-bottom: 1px solid #ecf0f1;
+    position: relative;
+    padding-left: 25px;
+}
+
+.features-list li::before {
+    content: "•";
+    color: #3498db;
+    font-weight: bold;
+    position: absolute;
+    left: 0;
+}
+
+.highlight {
+    background: #fff3cd;
+    border: 2px solid #ffc107;
+    border-radius: 8px;
+    padding: 15px;
+    margin: 20px 0;
+}
+
+.visual-section {
+    background: #f8f9fa;
+    border-radius: 15px;
+    padding: 30px;
+    margin: 30px 0;
+    text-align: center;
+}
+
+.svg-container {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.legend {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin: 20px 0;
+    flex-wrap: wrap;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 15px;
+    background: white;
+    border-radius: 25px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.legend-color {
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+}
+
+.key-points {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border-radius: 15px;
+    padding: 30px;
+    margin: 30px 0;
+}
+
+.key-points h3 {
+    margin-top: 0;
+    font-size: 1.5em;
+    text-align: center;
+}
+
+.points-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-top: 25px;
+}
+
+.point-card {
+    background: rgba(255,255,255,0.1);
+    border-radius: 10px;
+    padding: 20px;
+    backdrop-filter: blur(10px);
+}
+
+.point-card h4 {
+    margin-top: 0;
+    color: #fff;
+}
+
+/* SVG styles */
+svg {
+    border: 2px solid #ecf0f1;
+    border-radius: 8px;
+    background-color: #fafafa;
+}
+
+/* Estilos específicos para dbscan_q2.html - Densidad vs Conectividad */
+.comparison-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin: 30px 0;
+}
+
+.model-card {
+    border: 3px solid;
+    border-radius: 20px;
+    padding: 30px;
+    position: relative;
+    overflow: hidden;
+}
+
+.density-card {
+    border-color: #e74c3c;
+    background: linear-gradient(135deg, #ffeaea, #fff);
+}
+
+.connectivity-card {
+    border-color: #3498db;
+    background: linear-gradient(135deg, #eaf4ff, #fff);
+}
+
+.model-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 8px;
+    background: var(--header-color);
+}
+
+.density-card { --header-color: #e74c3c; }
+.connectivity-card { --header-color: #3498db; }
+
+.model-card h3 {
+    color: var(--header-color);
+    margin-top: 0;
+    font-size: 1.8em;
+    text-align: center;
+}
+
+.visual-demo {
+    background: #f8f9fa;
+    border-radius: 15px;
+    padding: 30px;
+    margin: 30px 0;
+    text-align: center;
+}
+
+.demo-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin-top: 20px;
+}
+
+.demo-section {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.feature-list {
+    list-style: none;
+    padding: 0;
+    margin: 20px 0;
+}
+
+.feature-list li {
+    padding: 12px 0;
+    border-bottom: 1px solid #ecf0f1;
+    position: relative;
+    padding-left: 30px;
+}
+
+.feature-list li::before {
+    content: "🔹";
+    position: absolute;
+    left: 0;
+    top: 12px;
+}
+
+.highlight-box {
+    background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+    border: 2px solid #fdcb6e;
+    border-radius: 15px;
+    padding: 25px;
+    margin: 25px 0;
+    position: relative;
+}
+
+.highlight-box::before {
+    content: "💡";
+    position: absolute;
+    top: -15px;
+    left: 25px;
+    background: #fdcb6e;
+    padding: 10px;
+    border-radius: 50%;
+    font-size: 1.2em;
+}
+
+.highlight-box h4 {
+    margin-top: 0;
+    margin-left: 50px;
+    color: #d63031;
+}
+
+.algorithm-example {
+    background: #f1f2f6;
+    border: 2px solid #a4b0be;
+    border-radius: 10px;
+    padding: 20px;
+    margin: 20px 0;
+    font-family: 'Courier New', monospace;
+}
+
+.step-by-step {
+    background: #dff0d8;
+    border: 2px solid #5cb85c;
+    border-radius: 15px;
+    padding: 25px;
+    margin: 25px 0;
+}
+
+.step {
+    margin: 15px 0;
+    padding: 15px;
+    background: white;
+    border-radius: 8px;
+    border-left: 4px solid #5cb85c;
+}
+
+.step h5 {
+    margin: 0 0 10px 0;
+    color: #5cb85c;
+    font-size: 1.1em;
+}
+
+/* Botón Volver */
+.back-button-container {
+    text-align: center;
+    margin: 40px 0;
+    padding: 20px;
+}
+
+.back-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 25px;
+    font-size: 16px;
+    font-weight: bold;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.back-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    color: white;
+    text-decoration: none;
+}
+
+.back-button:active {
+    transform: translateY(0);
+}
+
+.back-button::before {
+    content: "←";
+    font-size: 18px;
+    font-weight: bold;
+}
+
+/* Estilos específicos para dbscan_q3.html - Efectos del parámetro Epsilon */
+.epsilon-demo {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 25px;
+    margin: 30px 0;
+}
+
+.epsilon-card {
+    border: 3px solid;
+    border-radius: 20px;
+    padding: 25px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.epsilon-small {
+    border-color: #e74c3c;
+    background: linear-gradient(135deg, #ffebee, #fff);
+}
+
+.epsilon-optimal {
+    border-color: #27ae60;
+    background: linear-gradient(135deg, #e8f5e8, #fff);
+}
+
+.epsilon-large {
+    border-color: #f39c12;
+    background: linear-gradient(135deg, #fff3e0, #fff);
+}
+
+.epsilon-card h3 {
+    color: var(--header-color);
+    margin-top: 0;
+    font-size: 1.4em;
+}
+
+.epsilon-small { --header-color: #e74c3c; }
+.epsilon-optimal { --header-color: #27ae60; }
+.epsilon-large { --header-color: #f39c12; }
+
+.interactive-demo {
+    background: #f8f9fa;
+    border-radius: 15px;
+    padding: 30px;
+    margin: 30px 0;
+    text-align: center;
+}
+
+.controls {
+    margin: 20px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.control-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: white;
+    padding: 10px 15px;
+    border-radius: 25px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.control-group label {
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+.control-group input[type="range"] {
+    width: 150px;
+}
+
+.control-group input[type="number"] {
+    width: 60px;
+    padding: 5px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.effects-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin: 30px 0;
+}
+
+.effect-card {
+    border: 2px solid;
+    border-radius: 15px;
+    padding: 25px;
+}
+
+.small-epsilon { 
+    border-color: #e74c3c; 
+    background: linear-gradient(135deg, #ffebee, #fff);
+}
+
+.large-epsilon { 
+    border-color: #f39c12; 
+    background: linear-gradient(135deg, #fff3e0, #fff);
+}
+
+.effect-card h4 {
+    color: var(--title-color);
+    margin-top: 0;
+    font-size: 1.3em;
+    text-align: center;
+}
+
+.small-epsilon { --title-color: #e74c3c; }
+.large-epsilon { --title-color: #f39c12; }
+
+.consequences {
+    list-style: none;
+    padding: 0;
+    margin: 20px 0;
+}
+
+.consequences li {
+    padding: 10px 0;
+    border-bottom: 1px solid #ecf0f1;
+    position: relative;
+    padding-left: 30px;
+}
+
+.consequences li::before {
+    content: "⚠️";
+    position: absolute;
+    left: 0;
+    top: 10px;
+}
+
+/* Estilos específicos para dbscan_q4.html - Sensibilidad a parámetros */
+.demo-section {
+    background: #f8f9fa;
+    border-radius: 15px;
+    padding: 30px;
+    margin: 30px 0;
+    text-align: center;
+}
+
+.stats-display {
+    background: white;
+    border-radius: 10px;
+    padding: 15px;
+    margin: 20px 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 15px;
+    text-align: center;
+}
+
+.stat-item {
+    padding: 10px;
+    border-radius: 8px;
+    background: #f8f9fa;
+}
+
+.stat-value {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+.stat-label {
+    font-size: 0.9em;
+    color: #7f8c8d;
+}
+
+.before-card {
+    border-color: #3498db;
+}
+
+.current-card {
+    border-color: #e74c3c;
+}
+
+.stable-card {
+    border-color: #27ae60;
+}
+
+.sensitivity-examples {
+    background: #fff3cd;
+    border: 2px solid #ffc107;
+    border-radius: 15px;
+    padding: 25px;
+    margin: 30px 0;
+}
+
+.example-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin: 20px 0;
+}
+
+.example-card {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    border-left: 4px solid #ffc107;
+}
+
+.tips-section {
+    background: #dff0d8;
+    border: 2px solid #5cb85c;
+    border-radius: 15px;
+    padding: 25px;
+    margin: 30px 0;
+}
+
+/* Estilos específicos para dbscan_q5.html - Métrica de distancia */
+.metric-selector {
+    padding: 8px 12px;
+    border: 2px solid #bdc3c7;
+    border-radius: 8px;
+    background: white;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 25px;
+    margin: 30px 0;
+}
+
+.metric-card {
+    border: 3px solid;
+    border-radius: 15px;
+    padding: 25px;
+    background: white;
+}
+
+.euclidean-card {
+    border-color: #3498db;
+    background: linear-gradient(135deg, #ebf3fd, #fff);
+}
+
+.manhattan-card {
+    border-color: #e74c3c;
+    background: linear-gradient(135deg, #fdf2f2, #fff);
+}
+
+.great-circle-card {
+    border-color: #f39c12;
+    background: linear-gradient(135deg, #fef9e7, #fff);
+}
+
+.metric-card h4 {
+    color: var(--card-color);
+    margin-top: 0;
+    font-size: 1.3em;
+    text-align: center;
+}
+
+.euclidean-card { --card-color: #3498db; }
+.manhattan-card { --card-color: #e74c3c; }
+.great-circle-card { --card-color: #f39c12; }
+
+.formula-box {
+    background: #2c3e50;
+    color: white;
+    border-radius: 10px;
+    padding: 20px;
+    margin: 20px 0;
+    font-family: 'Courier New', monospace;
+    text-align: center;
+    font-size: 16px;
+}
+
+.euclidean-demo { border-color: #3498db; }
+.manhattan-demo { border-color: #e74c3c; }
+.chebyshev-demo { border-color: #f39c12; }
+
+.use-cases {
+    background: #dff0d8;
+    border: 2px solid #5cb85c;
+    border-radius: 15px;
+    padding: 25px;
+    margin: 30px 0;
+}
+
+.use-case-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin: 20px 0;
+}
+
+.use-case-card {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    border-left: 4px solid var(--use-case-color);
+}
+
+.euclidean-use { --use-case-color: #3498db; }
+.manhattan-use { --use-case-color: #e74c3c; }
+.great-circle-use { --use-case-color: #f39c12; }
+.custom-use { --use-case-color: #9b59b6; }
+
+/* Estilos específicos para dbscan_q6.html - Conceptos fundamentales */
+.concepts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px;
+    margin: 30px 0;
+}
+
+.concept-card {
+    border: 3px solid;
+    border-radius: 15px;
+    padding: 25px;
+    background: white;
+    text-align: center;
+}
+
+.core-card { 
+    border-color: #3498db; 
+    background: linear-gradient(135deg, #ebf3fd, #fff); 
+}
+
+.border-card { 
+    border-color: #f39c12; 
+    background: linear-gradient(135deg, #fef9e7, #fff); 
+}
+
+.noise-card { 
+    border-color: #e74c3c; 
+    background: linear-gradient(135deg, #fdf2f2, #fff); 
+}
+
+.concept-card h4 {
+    color: var(--accent-color);
+    margin-top: 0;
+    font-size: 1.4em;
+}
+
+.core-card { --accent-color: #3498db; }
+.border-card { --accent-color: #f39c12; }
+.noise-card { --accent-color: #e74c3c; }
+
+.definition-box {
+    background: #2c3e50;
+    color: white;
+    border-radius: 10px;
+    padding: 20px;
+    margin: 20px 0;
+    font-family: 'Courier New', monospace;
+    text-align: left;
+    font-size: 14px;
+}
+
+/* Estilos específicos para dbscan_q7.html - Valores pequeños de epsilon */
+.scenarios-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 25px;
+    margin: 30px 0;
+}
+
+.scenario-card {
+    border: 3px solid;
+    border-radius: 15px;
+    padding: 25px;
+    text-align: center;
+    background: white;
+}
+
+.small-eps { 
+    border-color: #27ae60; 
+    background: linear-gradient(135deg, #e8f5e8, #fff); 
+}
+
+.medium-eps { 
+    border-color: #f39c12; 
+    background: linear-gradient(135deg, #fef9e7, #fff); 
+}
+
+.large-eps { 
+    border-color: #e74c3c; 
+    background: linear-gradient(135deg, #fdf2f2, #fff); 
+}
+
+.scenario-card h4 {
+    color: var(--accent-color);
+    margin-top: 0;
+    font-size: 1.3em;
+}
+
+.small-eps { --accent-color: #27ae60; }
+.medium-eps { --accent-color: #f39c12; }
+.large-eps { --accent-color: #e74c3c; }
+
+.advantages-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin: 30px 0;
+}
+
+.advantage-card {
+    border: 2px solid #27ae60;
+    border-radius: 15px;
+    padding: 25px;
+    background: linear-gradient(135deg, #e8f5e8, #fff);
+}
+
+.advantage-card h5 {
+    color: #27ae60;
+    margin-top: 0;
+    font-size: 1.2em;
+    text-align: center;
+}
+
+.advantage-list {
+    list-style: none;
+    padding: 0;
+    margin: 15px 0;
+}
+
+.advantage-list li {
+    padding: 8px 0;
+    border-bottom: 1px solid #c8e6c9;
+    position: relative;
+    padding-left: 25px;
+}
+
+.advantage-list li::before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: #27ae60;
+    font-weight: bold;
+}
+
+.practical-examples {
+    background: #dff0d8;
+    border: 2px solid #5cb85c;
+    border-radius: 15px;
+    padding: 25px;
+    margin: 30px 0;
+}
