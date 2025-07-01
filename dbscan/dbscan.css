@@ -52,6 +52,10 @@ body {
     background: linear-gradient(135deg, #c0392b, #e74c3c);
 }
 
+.header.q8 {
+    background: linear-gradient(135deg, #8e44ad, #9b59b6);
+}
+
 .header h1 {
     margin: 0;
     font-size: 2.5em;
@@ -131,6 +135,14 @@ body {
 
 .question-box.q7::before {
     background: #c0392b;
+}
+
+.question-box.q8 {
+    border: 3px solid #8e44ad;
+}
+
+.question-box.q8::before {
+    background: #8e44ad;
 }
 
 .question-box::before {
@@ -962,6 +974,114 @@ svg {
 .practical-examples {
     background: #dff0d8;
     border: 2px solid #5cb85c;
+    border-radius: 15px;
+    padding: 25px;
+    margin: 30px 0;
+}
+
+/* Estilos específicos para dbscan_q8.html - Complejidad Temporal */
+.complexity-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 25px;
+    margin: 30px 0;
+}
+
+.complexity-card {
+    border: 3px solid;
+    border-radius: 15px;
+    padding: 25px;
+    background: white;
+    text-align: center;
+}
+
+.best-case {
+    border-color: #27ae60;
+    background: linear-gradient(135deg, #e8f5e8, #fff);
+}
+
+.worst-case {
+    border-color: #e74c3c;
+    background: linear-gradient(135deg, #ffebee, #fff);
+}
+
+.average-case {
+    border-color: #f39c12;
+    background: linear-gradient(135deg, #fff3e0, #fff);
+}
+
+.complexity-card h4 {
+    color: var(--complexity-color);
+    margin-top: 0;
+    font-size: 1.4em;
+}
+
+.best-case { --complexity-color: #27ae60; }
+.worst-case { --complexity-color: #e74c3c; }
+.average-case { --complexity-color: #f39c12; }
+
+.formula-display {
+    background: #2c3e50;
+    color: white;
+    border-radius: 10px;
+    padding: 20px;
+    margin: 20px 0;
+    font-family: 'Courier New', monospace;
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.comparison-section {
+    background: #f8f9fa;
+    border-radius: 15px;
+    padding: 30px;
+    margin: 30px 0;
+    text-align: center;
+}
+
+.factors-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 25px;
+    margin: 30px 0;
+}
+
+.factor-card {
+    border: 2px solid;
+    border-radius: 15px;
+    padding: 25px;
+    background: white;
+}
+
+.indexing-factor {
+    border-color: #3498db;
+    background: linear-gradient(135deg, #ebf3fd, #fff);
+}
+
+.implementation-factor {
+    border-color: #9b59b6;
+    background: linear-gradient(135deg, #f4f1f8, #fff);
+}
+
+.data-factor {
+    border-color: #e67e22;
+    background: linear-gradient(135deg, #fef5f0, #fff);
+}
+
+.factor-card h4 {
+    color: var(--factor-color);
+    margin-top: 0;
+    font-size: 1.3em;
+}
+
+.indexing-factor { --factor-color: #3498db; }
+.implementation-factor { --factor-color: #9b59b6; }
+.data-factor { --factor-color: #e67e22; }
+
+.optimization-tips {
+    background: #e8f4fd;
+    border: 2px solid #3498db;
     border-radius: 15px;
     padding: 25px;
     margin: 30px 0;
