@@ -251,7 +251,7 @@ body {
 .progress-bar-fill {
     height: 100%;
     background: linear-gradient(90deg, #27ae60, #2ecc71);
-    width: 35%; /* 7 de 20 preguntas = 35% */
+    width: 40%; /*porcentaje  cantPreguntasCreadas de ToatalDepreguntas ejemplo: 7/20*100 =  preguntas = 40% */
     transition: width 0.3s ease;
     display: flex;
     align-items: center;
