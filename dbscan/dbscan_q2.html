@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, minimum-scale=1.0, maximum-scale=3.0">
     <title>DBSCAN Pregunta 2: Densidad vs Conectividad</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
     <link rel="stylesheet" href="dbscan.css">
@@ -25,15 +25,15 @@
                 <p>Los modelos <strong>basados en densidad</strong> y <strong>basados en conectividad</strong> utilizan enfoques fundamentalmente diferentes para formar clusters:</p>
             </div>
 
-            <div class="comparison-container">
-                <div class="model-card density-card">
+            <div class="comparison-grid">
+                <div class="model-card density-based base-card">
                     <h3>🔴 Modelos Basados en Densidad</h3>
                     <p><strong>Ejemplos:</strong> DBSCAN, OPTICS, DENCLUE</p>
                     
                     <h4>🎯 Principio Fundamental:</h4>
                     <p>Buscan regiones del espacio de datos donde los puntos están <em>densamente empaquetados</em>, separadas por regiones de baja densidad.</p>
                     
-                    <ul class="feature-list">
+                    <ul class="features-list">
                         <li><strong>Medición de Densidad:</strong> Cuentan vecinos en un radio específico</li>
                         <li><strong>Criterio de Cluster:</strong> Densidad local supera un umbral</li>
                         <li><strong>Forma de Clusters:</strong> Arbitraria (no esférica)</li>
@@ -41,7 +41,7 @@
                         <li><strong>Parámetros:</strong> Radio (ε) y densidad mínima (MinPts)</li>
                     </ul>
 
-                    <div class="algorithm-example">
+                    <div class="algorithm-example" style="background: rgba(231, 76, 60, 0.1); padding: 15px; border-radius: 8px; margin: 15px 0; border-left: 4px solid #e74c3c;">
                         <strong>DBSCAN Algorithm:</strong><br>
                         1. Si un punto tiene ≥ MinPts vecinos en radio ε → Core Point<br>
                         2. Conectar core points densamente alcanzables<br>
@@ -50,14 +50,14 @@
                     </div>
                 </div>
 
-                <div class="model-card connectivity-card">
+                <div class="model-card partitioning base-card">
                     <h3>🔵 Modelos Basados en Conectividad</h3>
                     <p><strong>Ejemplos:</strong> Hierarchical Clustering, Single/Complete/Average Linkage</p>
                     
                     <h4>🎯 Principio Fundamental:</h4>
                     <p>Utilizan un enfoque <em>transitivo basado en encadenamiento</em> para determinar si los puntos pertenecen al mismo cluster.</p>
                     
-                    <ul class="feature-list">
+                    <ul class="features-list">
                         <li><strong>Criterio de Conexión:</strong> Distancia entre puntos más cercanos</li>
                         <li><strong>Transitividad:</strong> Si A conecta con B y B con C, entonces A-C están conectados</li>
                         <li><strong>Estructura:</strong> Forma jerarquías (dendrogramas)</li>
@@ -65,7 +65,7 @@
                         <li><strong>Parámetros:</strong> Métrica de distancia y criterio de linkage</li>
                     </ul>
 
-                    <div class="algorithm-example">
+                    <div class="algorithm-example" style="background: rgba(52, 152, 219, 0.1); padding: 15px; border-radius: 8px; margin: 15px 0; border-left: 4px solid #3498db;">
                         <strong>Hierarchical Algorithm:</strong><br>
                         1. Calcular matriz de distancias entre todos los puntos<br>
                         2. Unir los dos puntos/clusters más cercanos<br>
@@ -75,45 +75,49 @@
                 </div>
             </div>
 
-            <div class="highlight-box">
+            <div class="highlight" style="background: #fff3cd; color: #856404; border: 2px solid #ffeaa7; border-radius: 10px; padding: 20px; margin: 20px 0;">
                 <h4>Diferencia Clave Ilustrada</h4>
                 <p><strong>Densidad:</strong> "¿Hay suficientes vecinos cerca?" → Cuenta puntos en un radio</p>
                 <p><strong>Conectividad:</strong> "¿Puedo llegar de A a B a través de una cadena?" → Sigue caminos de conexiones</p>
             </div>
 
-            <div class="visual-demo">
+            <div class="visual-section">
                 <h3>🎨 Demostración Visual Interactiva</h3>
                 <p>Observa cómo cada enfoque maneja el mismo conjunto de datos:</p>
                 
-                <div class="demo-grid">
+                <div class="comparison-grid">
                     <div class="demo-section">
                         <h4 style="color: #e74c3c;">🔴 Enfoque de Densidad (DBSCAN)</h4>
-                        <svg id="density-demo" width="350" height="300"></svg>
+                        <div class="svg-container">
+                            <svg id="density-demo" width="350" height="300"></svg>
+                        </div>
                         <p><small>Identifica regiones densas y marca outliers</small></p>
                     </div>
                     
                     <div class="demo-section">
                         <h4 style="color: #3498db;">🔵 Enfoque de Conectividad (Hierarchical)</h4>
-                        <svg id="connectivity-demo" width="350" height="300"></svg>
+                        <div class="svg-container">
+                            <svg id="connectivity-demo" width="350" height="300"></svg>
+                        </div>
                         <p><small>Conecta puntos más cercanos formando jerarquías</small></p>
                     </div>
                 </div>
                 
                 <div class="legend">
                     <div class="legend-item">
-                        <div class="legend-color" style="background-color: #e74c3c;"></div>
+                        <div style="width: 12px; height: 12px; background-color: #e74c3c; border-radius: 50%; margin-right: 8px;"></div>
                         <span>Cluster 1</span>
                     </div>
                     <div class="legend-item">
-                        <div class="legend-color" style="background-color: #3498db;"></div>
+                        <div style="width: 12px; height: 12px; background-color: #3498db; border-radius: 50%; margin-right: 8px;"></div>
                         <span>Cluster 2</span>
                     </div>
                     <div class="legend-item">
-                        <div class="legend-color" style="background-color: #f39c12;"></div>
+                        <div style="width: 12px; height: 12px; background-color: #f39c12; border-radius: 50%; margin-right: 8px;"></div>
                         <span>Cluster 3</span>
                     </div>
                     <div class="legend-item">
-                        <div class="legend-color" style="background-color: #95a5a6;"></div>
+                        <div style="width: 12px; height: 12px; background-color: #95a5a6; border-radius: 50%; margin-right: 8px;"></div>
                         <span>Noise/Unassigned</span>
                     </div>
                 </div>
@@ -161,16 +165,16 @@
                 </div>
             </div>
 
-            <div class="highlight-box">
+            <div class="highlight" style="background: #fff3cd; color: #856404; border: 2px solid #ffeaa7; border-radius: 10px; padding: 20px; margin: 20px 0;">
                 <h4>Caso Específico del Artículo</h4>
                 <p>El artículo menciona: <em>"Dos puntos x e y podrían estar conectados si x→r→s→t→y donde a→b implica que b está en la vecindad de a."</em></p>
                 <p>Esto describe <strong>conectividad transitiva</strong>: aunque x e y estén lejos, están conectados a través de una cadena de puntos intermedios. En contraste, DBSCAN requiere densidad local suficiente en cada región.</p>
             </div>
         </div>
         
-        <div class="back-button-container">
+        <div class="back-button-container" style="padding: 20px; text-align: center;">
             <button class="back-button" onclick="history.back()">
-                Volver a la página anterior
+                ← Volver a la página anterior
             </button>
         </div>
     </div>

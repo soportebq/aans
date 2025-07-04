@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, minimum-scale=1.0, maximum-scale=3.0">
     <title>DBSCAN Pregunta 7: Valores Pequeños de Epsilon</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
     <link rel="stylesheet" href="dbscan.css">
@@ -11,197 +11,290 @@
     <div class="container">
         <div class="header q7">
             <h1>DBSCAN: Pregunta 7</h1>
-            <p>¿Cuándo son Preferibles los Valores Pequeños de Epsilon?</p>
+            <p>¿En Qué Casos Son Preferibles Valores Pequeños de Epsilon?</p>
         </div>
         
         <div class="content">
             <div class="question-box q7">
-                <h2>¿Cuándo son preferibles los valores pequeños de epsilon en DBSCAN?</h2>
-                <p><strong>Contexto:</strong> El parámetro epsilon (ε) determina el radio de vecindad. Valores más pequeños tienen ventajas específicas en ciertos escenarios de datos.</p>
+                <h2>¿En qué casos son preferibles valores pequeños de epsilon en DBSCAN?</h2>
+                <p><strong>Contexto:</strong> El parámetro epsilon controla qué tan cerca deben estar los puntos para considerarse vecinos. Valores pequeños pueden ser contraproducentes en muchos casos, pero hay situaciones específicas donde son ideales.</p>
+                <ul>
+                    <li><strong>Datos densos:</strong> Alta concentración de puntos</li>
+                    <li><strong>Precisión crítica:</strong> Cuando errores son costosos</li>
+                    <li><strong>Análisis fino:</strong> Detectar micro-estructuras</li>
+                </ul>
             </div>
 
             <div class="answer-section">
-                <h3>Respuesta: Los valores pequeños de epsilon son preferibles en datos densos y precisos</h3>
-                <p><strong>Regla clave:</strong> "En general, <em>valores más pequeños de epsilon son preferibles</em>, ya que usualmente solo una pequeña fracción de puntos permanece dentro de esta distancia entre sí." Esta aproximación conservadora mejora la precisión del clustering.</p>
+                <h3>Respuesta: Epsilon pequeño es ideal para análisis de precisión en datos densos</h3>
+                
+                <h4>Casos principales donde epsilon pequeño es preferible:</h4>
+                <p><strong>1. Datos naturalmente densos:</strong> Cuando los puntos están muy concentrados y se requiere precisión granular</p>
+                <p><strong>2. Aplicaciones críticas:</strong> Donde la precisión es más importante que la cobertura completa</p>
+                <p><strong>3. Detección de micro-patrones:</strong> Para identificar estructuras muy finas en los datos</p>
+                <p><strong>4. Control de calidad:</strong> Para evitar conexiones espurias entre puntos distantes</p>
             </div>
 
             <div class="demo-section">
-                <h3>🎮 Demostración Interactiva: Impacto de Valores Pequeños de Epsilon</h3>
-                <p>Experimenta con diferentes valores de epsilon y observa cuándo valores pequeños son más efectivos:</p>
+                <h3>🔬 Demostración Interactiva: Comparación de Densidades</h3>
+                <p><strong>Observa cómo epsilon pequeño funciona mejor en datos densos:</strong></p>
                 
-                <div class="controls">
+                <div class="controls-container">
                     <div class="control-group">
-                        <label>Epsilon (ε)</label>
-                        <input type="range" id="eps-slider" min="15" max="75" value="25" step="5">
-                        <input type="number" id="eps-input" min="15" max="75" value="25" step="5">
-                    </div>
-                    <div class="control-group">
-                        <label>MinPts</label>
-                        <input type="range" id="minpts-slider" min="2" max="6" value="3" step="1">
-                        <input type="number" id="minpts-input" min="2" max="6" value="3" step="1">
-                    </div>
-                    <div class="control-group">
-                        <label>Tipo de Datos</label>
-                        <select id="data-type" style="padding: 5px; border-radius: 5px;">
-                            <option value="dense">Datos Densos</option>
-                            <option value="sparse">Datos Dispersos</option>
-                            <option value="mixed">Datos Mixtos</option>
+                        <label for="datasetSelect">Tipo de Datos:</label>
+                        <select id="datasetSelect" class="dataset-selector">
+                            <option value="dense">Datos Densos (epsilon pequeño ideal)</option>
+                            <option value="sparse">Datos Dispersos (epsilon pequeño problemático)</option>
+                            <option value="mixed">Datos Mixtos (comparación)</option>
                         </select>
                     </div>
+                    
+                    <div class="control-group">
+                        <label for="epsilonSlider">Epsilon (ε): <span id="epsilonValue">25</span></label>
+                        <input type="range" id="epsilonSlider" min="10" max="60" value="25" step="5">
+                        <small>Cambios en tiempo real - Nota la diferencia por tipo de datos</small>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label for="minPtsSlider">MinPts: <span id="minPtsValue">3</span></label>
+                        <input type="range" id="minPtsSlider" min="2" max="6" value="3" step="1">
+                        <small>Puntos mínimos para ser core</small>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label>
+                            <input type="checkbox" id="showEpsilonCircles" checked>
+                            Mostrar círculos de epsilon
+                        </label>
+                    </div>
+                    
+                    <button id="resetDemo" class="demo-button">Reiniciar Demo</button>
                 </div>
-                
-                <svg id="main-demo" width="650" height="400"></svg>
-                
-                <div class="stats-display">
-                    <div class="stat-item">
-                        <div class="stat-value" id="current-eps">25</div>
-                        <div class="stat-label">Epsilon Actual</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-value" id="current-minpts">3</div>
-                        <div class="stat-label">MinPts</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-value" id="total-clusters">3</div>
-                        <div class="stat-label">Clusters Formados</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-value" id="noise-points">4</div>
-                        <div class="stat-label">Puntos Ruido</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-value" id="precision-score">85%</div>
-                        <div class="stat-label">Precisión Estimada</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-value" id="data-coverage">72%</div>
-                        <div class="stat-label">Cobertura de Datos</div>
-                    </div>
-                </div>
-            </div>
 
-            <div class="legend">
-                <div class="legend-item">
-                    <div class="legend-color" style="background-color: #3498db;"></div>
-                    <span>Core Points</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" style="background-color: #f39c12;"></div>
-                    <span>Border Points</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" style="background-color: #e74c3c;"></div>
-                    <span>Noise Points</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" style="background-color: rgba(52,152,219,0.2); border: 2px dashed #3498db;"></div>
-                    <span>Radio ε</span>
+                <div id="epsilon-comparison" class="visualization-container"></div>
+                
+                <div class="results-info">
+                    <div class="result-item">
+                        <strong>Tipo de datos:</strong> <span id="currentDataset">Densos</span>
+                    </div>
+                    <div class="result-item">
+                        <strong>Clusters encontrados:</strong> <span id="clusterCount">-</span>
+                    </div>
+                    <div class="result-item">
+                        <strong>Puntos de ruido:</strong> <span id="noiseCount">-</span>
+                    </div>
+                    <div class="result-item">
+                        <strong>Eficacia del epsilon:</strong> <span id="epsilonEffectiveness">-</span>
+                    </div>
                 </div>
             </div>
 
             <div class="scenarios-grid">
-                <div class="scenario-card small-eps">
-                    <h4>🟢 Epsilon Pequeño (ε=20)</h4>
-                    <svg id="small-eps-demo" width="200" height="150"></svg>
-                    <p><strong>Ventajas:</strong></p>
-                    <ul style="text-align: left; font-size: 0.9em;">
-                        <li>Alta precisión</li>
-                        <li>Clusters bien definidos</li>
-                        <li>Menos fusiones incorrectas</li>
-                        <li>Mejor detección de outliers</li>
+                <div class="scenario-card dense-scenario base-card">
+                    <h4>✅ Escenario Ideal: Datos Densos</h4>
+                    <p><strong>Características del dataset:</strong></p>
+                    <ul>
+                        <li>Puntos muy concentrados naturalmente</li>
+                        <li>Distancias típicas < 20-30 unidades</li>
+                        <li>Clusters bien definidos y compactos</li>
+                        <li>Pocos outliers genuinos</li>
+                    </ul>
+                    
+                    <p><strong>Beneficios de ε pequeño:</strong></p>
+                    <ul>
+                        <li><strong>Precisión máxima:</strong> Solo conecta puntos realmente cercanos</li>
+                        <li><strong>Evita ruido:</strong> Previene conexiones espurias</li>
+                        <li><strong>Clusters puros:</strong> Grupos muy homogéneos</li>
+                        <li><strong>Resolución fina:</strong> Detecta sub-estructuras</li>
                     </ul>
                 </div>
 
-                <div class="scenario-card medium-eps">
-                    <h4>🟡 Epsilon Medio (ε=40)</h4>
-                    <svg id="medium-eps-demo" width="200" height="150"></svg>
-                    <p><strong>Balance:</strong></p>
-                    <ul style="text-align: left; font-size: 0.9em;">
-                        <li>Precisión moderada</li>
-                        <li>Buena cobertura</li>
-                        <li>Algunas fusiones</li>
-                        <li>Ruido moderado</li>
+                <div class="scenario-card sparse-scenario base-card">
+                    <h4>❌ Escenario Problemático: Datos Dispersos</h4>
+                    <p><strong>Características del dataset:</strong></p>
+                    <ul>
+                        <li>Puntos naturalmente separados</li>
+                        <li>Distancias típicas > 50-100 unidades</li>
+                        <li>Clusters amplios y difusos</li>
+                        <li>Muchos puntos intermedios</li>
+                    </ul>
+                    
+                    <p><strong>Problemas de ε pequeño:</strong></p>
+                    <ul>
+                        <li><strong>Exceso de ruido:</strong> 60-80% puntos no clasificados</li>
+                        <li><strong>Fragmentación:</strong> Clusters artificialmente divididos</li>
+                        <li><strong>Pérdida de patrones:</strong> Estructura real no detectada</li>
+                        <li><strong>Baja utilidad:</strong> Resultados poco informativos</li>
                     </ul>
                 </div>
 
-                <div class="scenario-card large-eps">
-                    <h4>🔴 Epsilon Grande (ε=60)</h4>
-                    <svg id="large-eps-demo" width="200" height="150"></svg>
-                    <p><strong>Problemas:</strong></p>
-                    <ul style="text-align: left; font-size: 0.9em;">
-                        <li>Baja precisión</li>
-                        <li>Fusiones incorrectas</li>
-                        <li>Pérdida de estructura</li>
-                        <li>Pocos outliers detectados</li>
+                <div class="scenario-card critical-scenario base-card">
+                    <h4>🎯 Aplicaciones Críticas</h4>
+                    <p><strong>Casos donde precisión > cobertura:</strong></p>
+                    
+                    <h5>Medicina y Biología:</h5>
+                    <ul>
+                        <li>Análisis de expresión génica</li>
+                        <li>Detección de mutaciones</li>
+                        <li>Clasificación de células</li>
+                    </ul>
+                    
+                    <h5>Finanzas:</h5>
+                    <ul>
+                        <li>Detección de fraude</li>
+                        <li>Análisis de riesgo crediticio</li>
+                        <li>Trading de alta frecuencia</li>
+                    </ul>
+                    
+                    <h5>Manufactura:</h5>
+                    <ul>
+                        <li>Control de calidad</li>
+                        <li>Detección de defectos</li>
+                        <li>Tolerancias precisas</li>
                     </ul>
                 </div>
             </div>
 
-            <div class="advantages-grid">
-                <div class="advantage-card">
-                    <h5>🎯 Ventajas de Epsilon Pequeño</h5>
-                    <ul class="advantage-list">
-                        <li><strong>Mayor Precisión:</strong> Menos falsos positivos en la formación de clusters</li>
-                        <li><strong>Clusters Conservadores:</strong> Solo agrupa puntos realmente cercanos</li>
-                        <li><strong>Mejor Separación:</strong> Mantiene distintos los clusters naturalmente separados</li>
-                        <li><strong>Detección Efectiva de Outliers:</strong> Puntos aislados se clasifican correctamente como ruido</li>
-                        <li><strong>Menor Sensibilidad al Ruido:</strong> Datos ruidosos no afectan tanto la formación de clusters</li>
-                        <li><strong>Estructura Más Fiel:</strong> Respeta mejor la estructura natural de los datos</li>
+            <div class="comparison-grid">
+                <div class="comparison-card advantages-card base-card">
+                    <h4>✅ Ventajas de Epsilon Pequeño</h4>
+                    
+                    <h5>🎯 Precisión Máxima:</h5>
+                    <ul>
+                        <li>Evita falsos positivos en clustering</li>
+                        <li>Conexiones solo entre puntos muy similares</li>
+                        <li>Clusters de alta pureza y homogeneidad</li>
+                    </ul>
+                    
+                    <h5>🔍 Resolución Fina:</h5>
+                    <ul>
+                        <li>Detecta micro-estructuras en los datos</li>
+                        <li>Identifica sub-clusters dentro de grupos</li>
+                        <li>Análisis granular de patrones</li>
+                    </ul>
+                    
+                    <h5>🛡️ Control de Ruido:</h5>
+                    <ul>
+                        <li>Filtro conservador contra outliers</li>
+                        <li>Previene contaminación cruzada</li>
+                        <li>Mantiene integridad estructural</li>
                     </ul>
                 </div>
 
-                <div class="advantage-card">
-                    <h5>📊 Cuándo Usar Epsilon Pequeño</h5>
-                    <ul class="advantage-list">
-                        <li><strong>Datos Densos:</strong> Cuando los clusters naturales están muy concentrados</li>
-                        <li><strong>Alta Dimensionalidad:</strong> Para combatir la "maldición de dimensionalidad"</li>
-                        <li><strong>Detección de Anomalías:</strong> Cuando la identificación de outliers es crítica</li>
-                        <li><strong>Datos de Alta Calidad:</strong> Con mediciones precisas y poco ruido</li>
-                        <li><strong>Análisis Exploratorio:</strong> Para entender la estructura fina de los datos</li>
-                        <li><strong>Aplicaciones Críticas:</strong> Donde la precisión es más importante que la cobertura</li>
+                <div class="comparison-card disadvantages-card base-card">
+                    <h4>❌ Desventajas de Epsilon Pequeño</h4>
+                    
+                    <h5>📉 Baja Cobertura:</h5>
+                    <ul>
+                        <li>Muchos puntos clasificados como ruido</li>
+                        <li>Clusters artificialmente fragmentados</li>
+                        <li>Pérdida de información valiosa</li>
+                    </ul>
+                    
+                    <h5>🔧 Sensibilidad Extrema:</h5>
+                    <ul>
+                        <li>Muy dependiente de la escala de datos</li>
+                        <li>Requiere normalización cuidadosa</li>
+                        <li>Pequeños cambios = resultados muy diferentes</li>
+                    </ul>
+                    
+                    <h5>⚠️ Riesgo de Sobre-segmentación:</h5>
+                    <ul>
+                        <li>Clusters naturales divididos artificialmente</li>
+                        <li>Pérdida de contexto global</li>
+                        <li>Interpretación más compleja</li>
+                    </ul>
+                </div>
+
+                <div class="comparison-card guidelines-card base-card">
+                    <h4>📋 Guías de Decisión</h4>
+                    
+                    <h5>✅ Usar Epsilon Pequeño Cuando:</h5>
+                    <ul>
+                        <li><strong>Datos densos:</strong> Distancias naturalmente pequeñas</li>
+                        <li><strong>Precisión crítica:</strong> Errores tienen alto costo</li>
+                        <li><strong>Análisis exploratorio:</strong> Entender estructura fina</li>
+                        <li><strong>Control de calidad:</strong> Detectar anomalías sutiles</li>
+                    </ul>
+                    
+                    <h5>❌ Evitar Epsilon Pequeño Cuando:</h5>
+                    <ul>
+                        <li><strong>Datos dispersos:</strong> Distancias naturalmente grandes</li>
+                        <li><strong>Cobertura prioritaria:</strong> Necesitas clasificar todo</li>
+                        <li><strong>Clustering exploratorio:</strong> Buscas patrones generales</li>
+                        <li><strong>Datos ruidosos:</strong> Muchas mediciones imprecisas</li>
                     </ul>
                 </div>
             </div>
 
-            <div class="highlight-box">
-                <h4>Principio Fundamental</h4>
-                <p><strong>La regla de Analytics Vidhya:</strong> "En general, valores más pequeños de epsilon son preferibles, ya que usualmente solo una pequeña fracción de puntos permanece dentro de esta distancia entre sí."</p>
-                <p><strong>¿Por qué funciona?</strong> Los valores pequeños de epsilon actúan como un filtro conservador que solo conecta puntos que están genuinamente cerca, evitando conexiones espurias que pueden crear clusters artificiales o fusionar clusters que deberían estar separados.</p>
+            <div class="methodology-section base-card">
+                <h4>🔬 Metodología para Determinar Epsilon Óptimo</h4>
+                
+                <div class="method-steps">
+                    <div class="step">
+                        <span class="step-number">1</span>
+                        <div class="step-content">
+                            <h5>Análisis Exploratorio de Datos</h5>
+                            <ul>
+                                <li>Calcular estadísticas de distancias entre puntos</li>
+                                <li>Crear histograma de distancias al vecino más cercano</li>
+                                <li>Identificar percentiles clave (25%, 50%, 75%)</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="step">
+                        <span class="step-number">2</span>
+                        <div class="step-content">
+                            <h5>Método K-Distance Plot</h5>
+                            <ul>
+                                <li>Graficar distancias k-ésimo vecino ordenadas</li>
+                                <li>Buscar "codo" en la curva</li>
+                                <li>Punto de inflexión sugiere epsilon óptimo</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="step">
+                        <span class="step-number">3</span>
+                        <div class="step-content">
+                            <h5>Validación Iterativa</h5>
+                            <ul>
+                                <li>Probar rangos de epsilon (pequeño → grande)</li>
+                                <li>Evaluar calidad con métricas como silhouette</li>
+                                <li>Balancear precisión vs cobertura según contexto</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <div class="practical-examples">
-                <h3>🏭 Ejemplos Prácticos de Epsilon Pequeño</h3>
-                <div class="example-grid">
-                    <div class="example-card">
-                        <h6>🏥 Diagnóstico Médico</h6>
-                        <p><strong>Contexto:</strong> Análisis de síntomas para diagnóstico</p>
-                        <p><strong>Epsilon pequeño:</strong> ε = 0.1</p>
-                        <p><strong>Beneficio:</strong> Evita clasificar incorrectamente enfermedades similares pero distintas</p>
-                        <p><strong>Resultado:</strong> Clusters más precisos de patologías específicas</p>
+            <div class="practical-examples base-card">
+                <h4>📊 Ejemplos Prácticos Exitosos</h4>
+                
+                <div class="examples-grid">
+                    <div class="example">
+                        <h5>🧬 Análisis Genómico</h5>
+                        <p><strong>Problema:</strong> Clasificar genes por expresión en células individuales</p>
+                        <p><strong>Dataset:</strong> 20,000 genes, expresión muy variable</p>
+                        <p><strong>Solución:</strong> ε = 0.1 (muy pequeño) + normalización log</p>
+                        <p><strong>Resultado:</strong> Identificación precisa de tipos celulares raros</p>
                     </div>
                     
-                    <div class="example-card">
-                        <h6>🔐 Detección de Fraude</h6>
-                        <p><strong>Contexto:</strong> Análisis de transacciones financieras</p>
-                        <p><strong>Epsilon pequeño:</strong> ε = 0.05</p>
-                        <p><strong>Beneficio:</strong> Identifica patrones muy específicos de fraude</p>
-                        <p><strong>Resultado:</strong> Menor tasa de falsos positivos</p>
+                    <div class="example">
+                        <h5>💳 Detección de Fraude</h5>
+                        <p><strong>Problema:</strong> Identificar transacciones fraudulentas en tiempo real</p>
+                        <p><strong>Dataset:</strong> Millones de transacciones diarias</p>
+                        <p><strong>Solución:</strong> ε = 0.05 en datos normalizados</p>
+                        <p><strong>Resultado:</strong> 99.8% precisión, falsos positivos mínimos</p>
                     </div>
                     
-                    <div class="example-card">
-                        <h6>📊 Segmentación de Clientes Premium</h6>
-                        <p><strong>Contexto:</strong> Análisis de comportamiento de compra</p>
-                        <p><strong>Epsilon pequeño:</strong> ε = 0.2</p>
-                        <p><strong>Beneficio:</strong> Identifica nichos muy específicos de mercado</p>
-                        <p><strong>Resultado:</strong> Estrategias de marketing más dirigidas</p>
-                    </div>
-                    
-                    <div class="example-card">
-                        <h6>🧬 Análisis Genómico</h6>
-                        <p><strong>Contexto:</strong> Agrupación de secuencias de ADN</p>
-                        <p><strong>Epsilon pequeño:</strong> ε = 0.01</p>
-                        <p><strong>Beneficio:</strong> Evita agrupar genes funcionalmente diferentes</p>
-                        <p><strong>Resultado:</strong> Análisis más preciso de expresión génica</p>
+                    <div class="example">
+                        <h5>🏭 Control de Calidad</h5>
+                        <p><strong>Problema:</strong> Detectar piezas defectuosas en manufactura</p>
+                        <p><strong>Dataset:</strong> Mediciones de tolerancia micrométrica</p>
+                        <p><strong>Solución:</strong> ε = 0.001 (tolerancia muy estricta)</p>
+                        <p><strong>Resultado:</strong> Detección temprana de problemas de maquinaria</p>
                     </div>
                 </div>
             </div>
@@ -226,12 +319,12 @@
                 <h4>💡 Recomendación:</h4>
                 <p><strong>Empezar siempre con valores pequeños</strong> de epsilon e incrementar gradualmente hasta encontrar el balance óptimo entre precisión y cobertura para tu conjunto específico de datos.</p>
             </div>
-        </div>
-        
-        <div class="back-button-container">
-            <button class="back-button" onclick="history.back()">
-                Volver a la página anterior
-            </button>
+            
+            <div class="back-button-container">
+                <button class="back-button" onclick="history.back()">
+                    Volver a la página anterior
+                </button>
+            </div>
         </div>
     </div>
 

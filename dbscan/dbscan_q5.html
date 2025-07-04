@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, minimum-scale=1.0, maximum-scale=3.0">
     <title>DBSCAN Pregunta 5: Métrica de Distancia</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
     <link rel="stylesheet" href="dbscan.css">
@@ -16,206 +16,178 @@
         
         <div class="content">
             <div class="question-box q5">
-                <h2>¿Qué métrica de distancia utiliza DBSCAN y se pueden usar otras?</h2>
-                <p><strong>Contexto:</strong> La métrica de distancia determina cómo se calcula la "cercanía" entre puntos, afectando directamente la formación de clusters.</p>
+                <h2>¿Qué métrica de distancia utiliza DBSCAN y cómo afecta a los resultados?</h2>
+                <p><strong>Contexto:</strong> La métrica de distancia es fundamental para determinar la vecindad de los puntos. Diferentes métricas pueden producir resultados de clustering completamente diferentes, incluso con los mismos parámetros.</p>
+                <ul>
+                    <li><strong>Distancia Euclidiana:</strong> La más común, basada en línea recta</li>
+                    <li><strong>Distancia Manhattan:</strong> Suma de diferencias absolutas</li>
+                    <li><strong>Distancia Chebyshev:</strong> Máxima diferencia en cualquier dimensión</li>
+                </ul>
             </div>
 
             <div class="answer-section">
-                <h3>Respuesta: DBSCAN usa Euclidiana por defecto, pero acepta otras métricas</h3>
-                <p><strong>Por defecto:</strong> DBSCAN utiliza la <em>distancia Euclidiana</em>, pero el algoritmo es <strong>flexible</strong> y puede usar cualquier métrica de distancia apropiada para el tipo de datos y dominio del problema.</p>
+                <h3>Respuesta: DBSCAN usa Euclidiana por defecto, pero es flexible</h3>
+                
+                <h4>Métrica por defecto:</h4>
+                <p><strong>Distancia Euclidiana:</strong> La implementación estándar usa esta métrica, que mide la "línea recta" entre dos puntos en el espacio n-dimensional.</p>
+                
+                <h4>Flexibilidad de métricas:</h4>
+                <p><strong>DBSCAN es agnóstico a la métrica:</strong> Puede usar cualquier función de distancia apropiada para el dominio específico del problema.</p>
+                
+                <h4>Impacto en clustering:</h4>
+                <p><strong>Resultados dramáticamente diferentes:</strong> La misma configuración de parámetros puede producir clusters completamente distintos según la métrica utilizada.</p>
             </div>
 
             <div class="demo-section">
-                <h3>🎮 Demostración Interactiva de Métricas</h3>
-                <p>Selecciona diferentes métricas y observa cómo cambian los resultados:</p>
+                <h3>🔬 Demostración Interactiva: Comparación de Métricas</h3>
+                <p><strong>Observa cómo diferentes métricas afectan el clustering con los mismos parámetros:</strong></p>
                 
-                <div class="controls">
+                <div class="controls-container">
                     <div class="control-group">
-                        <label>Métrica de Distancia</label>
-                        <select id="metric-selector" class="metric-selector">
+                        <label for="metricSelect">Métrica de Distancia:</label>
+                        <select id="metricSelect" class="metric-selector">
                             <option value="euclidean">Euclidiana (por defecto)</option>
                             <option value="manhattan">Manhattan (L1)</option>
                             <option value="chebyshev">Chebyshev (L∞)</option>
                         </select>
                     </div>
+                    
                     <div class="control-group">
-                        <label>Epsilon (ε)</label>
-                        <input type="range" id="eps-slider" min="30" max="80" value="50" step="5">
-                        <span id="eps-value">50</span>
+                        <label for="epsilonSlider">Epsilon (ε): <span id="epsilonValue">40</span></label>
+                        <input type="range" id="epsilonSlider" min="20" max="80" value="40" step="5">
+                        <small>Cambios en tiempo real</small>
                     </div>
+                    
                     <div class="control-group">
-                        <label>MinPts</label>
-                        <input type="range" id="minpts-slider" min="2" max="8" value="3" step="1">
-                        <span id="minpts-value">3</span>
+                        <label for="minPtsSlider">MinPts: <span id="minPtsValue">3</span></label>
+                        <input type="range" id="minPtsSlider" min="2" max="6" value="3" step="1">
+                        <small>Cambios en tiempo real</small>
                     </div>
+                    
+                    <button id="resetDemo" class="demo-button">Reiniciar a Valores Óptimos</button>
                 </div>
+
+                <div id="metric-visualization" class="visualization-container"></div>
                 
-                <svg id="metrics-demo" width="600" height="400"></svg>
-                
-                <div class="stats-display">
-                    <div class="stat-item">
-                        <div class="stat-value" id="current-metric">Euclidiana</div>
-                        <div class="stat-label">Métrica Actual</div>
+                <div class="results-info">
+                    <div class="result-item">
+                        <strong>Métrica actual:</strong> <span id="currentMetric">Euclidiana</span>
                     </div>
-                    <div class="stat-item">
-                        <div class="stat-value" id="epsilon-used">50</div>
-                        <div class="stat-label">Epsilon</div>
+                    <div class="result-item">
+                        <strong>Clusters encontrados:</strong> <span id="clusterCount">-</span>
                     </div>
-                    <div class="stat-item">
-                        <div class="stat-value" id="minpts-used">3</div>
-                        <div class="stat-label">MinPts</div>
+                    <div class="result-item">
+                        <strong>Puntos de ruido:</strong> <span id="noiseCount">-</span>
                     </div>
-                    <div class="stat-item">
-                        <div class="stat-value" id="current-clusters">3</div>
-                        <div class="stat-label">Clusters</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-value" id="current-noise">4</div>
-                        <div class="stat-label">Ruido</div>
+                    <div class="result-item">
+                        <strong>Eficiencia relativa:</strong> <span id="efficiency">-</span>
                     </div>
                 </div>
             </div>
 
-            <div class="legend">
-                <div class="legend-item">
-                    <div class="legend-color" style="background-color: #3498db;"></div>
-                    <span>Cluster 1</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" style="background-color: #e74c3c;"></div>
-                    <span>Cluster 2</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" style="background-color: #f39c12;"></div>
-                    <span>Cluster 3</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" style="background-color: #9b59b6;"></div>
-                    <span>Cluster 4</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" style="background-color: #95a5a6;"></div>
-                    <span>Ruido</span>
-                </div>
-            </div>
-
-            <div class="comparison-grid">
-                <div class="comparison-card euclidean-demo">
-                    <h4 style="color: #3498db;">📏 Euclidiana</h4>
-                    <svg id="euclidean-demo" width="200" height="150"></svg>
-                    <p>Círculos de vecindad</p>
-                    <p><small>ε=45, Clusters: 3</small></p>
-                </div>
-
-                <div class="comparison-card manhattan-demo">
-                    <h4 style="color: #e74c3c;">🏢 Manhattan</h4>
-                    <svg id="manhattan-demo" width="200" height="150"></svg>
-                    <p>Rombos de vecindad</p>
-                    <p><small>ε=45, Clusters: 2</small></p>
-                </div>
-
-                <div class="comparison-card chebyshev-demo">
-                    <h4 style="color: #f39c12;">⬜ Chebyshev</h4>
-                    <svg id="chebyshev-demo" width="200" height="150"></svg>
-                    <p>Cuadrados de vecindad</p>
-                    <p><small>ε=45, Clusters: 4</small></p>
-                </div>
-            </div>
-
-            <div class="metrics-grid">
-                <div class="metric-card euclidean-card">
-                    <h4>📏 Distancia Euclidiana (Por Defecto)</h4>
-                    <div class="formula-box">
+            <div class="metric-grid">
+                <div class="metric-card euclidean-card base-card">
+                    <h4>📐 Distancia Euclidiana (L2)</h4>
+                    <div class="formula-display">
                         d = √[(x₂-x₁)² + (y₂-y₁)²]
                     </div>
                     <p><strong>Características:</strong></p>
                     <ul>
-                        <li>Distancia "en línea recta"</li>
-                        <li>Más común en espacios continuos</li>
+                        <li>Métrica por defecto en DBSCAN</li>
+                        <li>Mide "línea recta" entre puntos</li>
                         <li>Sensible a todas las dimensiones</li>
-                        <li>Forma círculos de vecindad</li>
+                        <li>Clusters tienden a ser circulares/esféricos</li>
                     </ul>
-                    <p><strong>Mejor para:</strong> Datos numéricos, espacios geométricos</p>
+                    <p><strong>Mejor para:</strong> Datos con distribución isotrópica y escalas similares</p>
                 </div>
 
-                <div class="metric-card manhattan-card">
-                    <h4>🏢 Distancia Manhattan (L1)</h4>
-                    <div class="formula-box">
+                <div class="metric-card manhattan-card base-card">
+                    <h4>🏙️ Distancia Manhattan (L1)</h4>
+                    <div class="formula-display">
                         d = |x₂-x₁| + |y₂-y₁|
                     </div>
                     <p><strong>Características:</strong></p>
                     <ul>
+                        <li>También llamada "distancia de taxi"</li>
                         <li>Suma de diferencias absolutas</li>
-                        <li>Movimiento tipo "taxi" en cuadrícula</li>
-                        <li>Menos sensible a outliers</li>
-                        <li>Forma rombos de vecindad</li>
+                        <li>Más robusta a outliers</li>
+                        <li>Clusters tienden a ser cuadrados/rectangulares</li>
                     </ul>
-                    <p><strong>Mejor para:</strong> Datos categóricos, grids urbanos</p>
+                    <p><strong>Mejor para:</strong> Datos en grillas, coordenadas urbanas, variables categóricas</p>
                 </div>
 
-                <div class="metric-card great-circle-card">
-                    <h4>🌍 Distancia de Gran Círculo</h4>
-                    <div class="formula-box">
-                        d = 2r × arcsin(√[sin²(Δφ/2) + cos(φ₁)cos(φ₂)sin²(Δλ/2)])
+                <div class="metric-card chebyshev-card base-card">
+                    <h4>♔ Distancia Chebyshev (L∞)</h4>
+                    <div class="formula-display">
+                        d = max(|x₂-x₁|, |y₂-y₁|)
                     </div>
                     <p><strong>Características:</strong></p>
                     <ul>
-                        <li>Para coordenadas geográficas</li>
-                        <li>Considera curvatura terrestre</li>
-                        <li>Distancia real en la superficie</li>
-                        <li>Esencial para datos GPS</li>
+                        <li>También llamada "distancia del rey"</li>
+                        <li>Máxima diferencia en cualquier dimensión</li>
+                        <li>Menos sensible a dimensiones específicas</li>
+                        <li>Clusters tienden a ser cuadrados</li>
                     </ul>
-                    <p><strong>Mejor para:</strong> Datos geográficos, ubicaciones GPS</p>
+                    <p><strong>Mejor para:</strong> Problemas donde la dimensión dominante es crítica</p>
                 </div>
             </div>
 
-            <div class="use-cases">
-                <h3>🎯 Casos de Uso por Métrica</h3>
-                <div class="use-case-grid">
-                    <div class="use-case-card euclidean-use">
-                        <h5>📏 Euclidiana</h5>
-                        <ul>
-                            <li>Análisis de imágenes</li>
-                            <li>Datos científicos continuos</li>
-                            <li>Coordenadas cartesianas</li>
-                            <li>Mediciones físicas</li>
-                        </ul>
-                    </div>
+            <div class="comparison-grid">
+                <div class="comparison-card sensitivity-card base-card">
+                    <h4>⚡ Sensibilidad al Epsilon</h4>
+                    <p><strong>Euclidiana:</strong> Sensibilidad moderada y uniforme</p>
+                    <p><strong>Manhattan:</strong> Menos sensible, más robusta</p>
+                    <p><strong>Chebyshev:</strong> Muy sensible a valores extremos</p>
                     
-                    <div class="use-case-card manhattan-use">
-                        <h5>🏢 Manhattan</h5>
-                        <ul>
-                            <li>Datos categóricos ordinales</li>
-                            <li>Sistemas de recomendación</li>
-                            <li>Análisis de redes urbanas</li>
-                            <li>Datos con ruido</li>
-                        </ul>
-                    </div>
+                    <p><strong>Implicación práctica:</strong></p>
+                    <ul>
+                        <li>Manhattan requiere epsilon más alto</li>
+                        <li>Chebyshev necesita ajuste cuidadoso</li>
+                        <li>Euclidiana es más predecible</li>
+                    </ul>
+                </div>
+
+                <div class="comparison-card performance-card base-card">
+                    <h4>🚀 Rendimiento Computacional</h4>
+                    <p><strong>Manhattan:</strong> Más rápida (solo sumas)</p>
+                    <p><strong>Chebyshev:</strong> Muy rápida (solo comparaciones)</p>
+                    <p><strong>Euclidiana:</strong> Más lenta (raíz cuadrada)</p>
                     
-                    <div class="use-case-card great-circle-use">
-                        <h5>🌍 Gran Círculo</h5>
-                        <ul>
-                            <li>Análisis geoespacial</li>
-                            <li>Tracking GPS</li>
-                            <li>Estudios climáticos</li>
-                            <li>Logística y transporte</li>
-                        </ul>
-                    </div>
+                    <p><strong>Optimizaciones:</strong></p>
+                    <ul>
+                        <li>Usar distancia cuadrada (sin √) cuando sea posible</li>
+                        <li>Estructuras de indexación espacial</li>
+                        <li>Paralelización para datasets grandes</li>
+                    </ul>
+                </div>
+
+                <div class="comparison-card applications-card base-card">
+                    <h4>🎯 Aplicaciones Específicas</h4>
+                    <p><strong>Euclidiana:</strong></p>
+                    <ul>
+                        <li>Clustering general de datos numéricos</li>
+                        <li>Análisis de imágenes y visión</li>
+                        <li>Datos científicos y mediciones físicas</li>
+                    </ul>
                     
-                    <div class="use-case-card custom-use">
-                        <h5>⚙️ Métricas Personalizadas</h5>
-                        <ul>
-                            <li>Distancia coseno (texto)</li>
-                            <li>Distancia Hamming (binarios)</li>
-                            <li>Distancia Jaccard (conjuntos)</li>
-                            <li>Métricas del dominio específico</li>
-                        </ul>
-                    </div>
+                    <p><strong>Manhattan:</strong></p>
+                    <ul>
+                        <li>Datos geográficos urbanos</li>
+                        <li>Variables categóricas binarias</li>
+                        <li>Análisis de texto y NLP</li>
+                    </ul>
+                    
+                    <p><strong>Chebyshev:</strong></p>
+                    <ul>
+                        <li>Análisis de tiempo series</li>
+                        <li>Control de procesos industriales</li>
+                        <li>Juegos y tableros</li>
+                    </ul>
                 </div>
             </div>
 
-            <div class="highlight-box">
-                <h4>Selección de Métrica: Consideraciones Clave</h4>
+            <div class="highlight-box base-card">
+                <h4>💡 Selección de Métrica: Consideraciones Clave</h4>
                 <p><strong>Factores importantes para elegir la métrica correcta:</strong></p>
                 <ul>
                     <li><strong>Tipo de datos:</strong> Numéricos vs categóricos vs geográficos</li>
@@ -250,12 +222,12 @@
                 <h4>💡 Recomendación:</h4>
                 <p>Siempre <strong>experimentar con múltiples métricas</strong> y seleccionar la que mejor se adapte al dominio específico y tipo de datos del problema.</p>
             </div>
-        </div>
-        
-        <div class="back-button-container">
-            <button class="back-button" onclick="history.back()">
-                Volver a la página anterior
-            </button>
+            
+            <div class="back-button-container">
+                <button class="back-button" onclick="history.back()">
+                    Volver a la página anterior
+                </button>
+            </div>
         </div>
     </div>
 

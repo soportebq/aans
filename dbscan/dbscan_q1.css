@@ -1,0 +1,244 @@
+/* ===================================================================== */
+/* DBSCAN_Q1.CSS - CSS ESPECÍFICO SOLO PARA PREGUNTA 1 */
+/* ===================================================================== */
+
+/* ===== SECCIONES ESPECÍFICAS DE Q1 ===== */
+
+/* Key Points Section - Única en Q1 */
+.key-points {
+    background: linear-gradient(135deg, #667eea, #764ba2) !important;
+    color: white !important;
+    border-radius: 15px;
+    padding: 30px; /* Desktop: padding generoso */
+    margin: 30px 0;
+    position: relative;
+    overflow: hidden;
+    line-height: 1.5;
+}
+
+.key-points h3 {
+    color: white !important;
+    margin-bottom: 15px !important;
+}
+
+.key-points p,
+.key-points li {
+    color: white !important;
+    margin-bottom: 8px !important;
+}
+
+.key-points ul {
+    padding-left: 20px !important;
+    margin: 15px 0 !important;
+}
+
+.key-points li {
+    margin-bottom: 8px !important;
+    padding-left: 5px !important;
+    line-height: 1.4 !important;
+}
+
+/* Point Cards dentro de Key Points */
+.point-card {
+    background: rgba(255,255,255,0.1) !important;
+    border: 2px solid rgba(255,255,255,0.2);
+    border-radius: 12px;
+    padding: 20px;
+    margin: 15px 0;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+.point-card:hover {
+    background: rgba(255,255,255,0.15) !important;
+    transform: translateY(-3px);
+}
+
+.point-card h4 {
+    color: #fff !important;
+    margin-bottom: 10px !important;
+    font-size: 1.1em;
+}
+
+.point-card p {
+    color: #fff !important;
+    margin-bottom: 8px !important;
+    opacity: 0.9;
+}
+
+/* Highlight Box - Específico de Q1 */
+.highlight {
+    background: #fff3cd !important;
+    color: #856404 !important;
+    border: 2px solid #ffeaa7;
+    border-radius: 10px;
+    padding: 20px;
+    margin: 20px 0;
+    line-height: 1.5;
+}
+
+.highlight strong {
+    color: #856404 !important;
+    font-weight: bold;
+}
+
+.highlight p {
+    color: #856404 !important;
+    margin-bottom: 8px !important;
+}
+
+/* Features List - Específico para algorithm cards en Q1 */
+.features-list {
+    margin: 15px 0 !important;
+    padding-left: 20px !important;
+}
+
+.features-list li {
+    color: #2c3e50 !important;
+    margin-bottom: 8px !important;
+    padding-left: 5px !important;
+    line-height: 1.4 !important;
+    font-size: 0.95em;
+}
+
+/* Legend Items específicos para Q1 */
+.legend-item {
+    background: white !important;
+    color: #2c3e50 !important;
+    border: 1px solid #ecf0f1;
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-size: 0.9em;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* ===== RESPONSIVE ESPECÍFICO PARA Q1 ===== */
+
+/* Tablets y móviles grandes (≤767px) */
+@media (max-width: 767px) {
+    .key-points {
+        padding: 20px !important;
+        margin: 20px 0 !important;
+    }
+    
+    .key-points h3 {
+        font-size: 1.2em !important;
+        margin-bottom: 12px !important;
+    }
+    
+    .key-points ul {
+        padding-left: 18px !important;
+        margin: 12px 0 !important;
+    }
+    
+    .key-points li {
+        margin-bottom: 6px !important;
+        font-size: 0.9em !important;
+    }
+    
+    .point-card {
+        padding: 15px !important;
+        margin: 12px 0 !important;
+    }
+    
+    .point-card h4 {
+        font-size: 1em !important;
+        margin-bottom: 8px !important;
+    }
+    
+    .highlight {
+        padding: 15px !important;
+        margin: 15px 0 !important;
+    }
+    
+    .features-list {
+        padding-left: 18px !important;
+        margin: 12px 0 !important;
+    }
+    
+    .features-list li {
+        font-size: 0.85em !important;
+        margin-bottom: 6px !important;
+    }
+    
+    .legend-item {
+        font-size: 0.8em !important;
+        padding: 6px 12px !important;
+    }
+}
+
+/* Móviles pequeños (≤480px) */
+@media (max-width: 480px) {
+    .key-points {
+        padding: 15px !important;
+        margin: 15px 0 !important;
+    }
+    
+    .key-points h3 {
+        font-size: 1em !important;
+        margin-bottom: 10px !important;
+    }
+    
+    .key-points ul {
+        padding-left: 16px !important;
+        margin: 10px 0 !important;
+    }
+    
+    .key-points li {
+        margin-bottom: 5px !important;
+        font-size: 0.85em !important;
+    }
+    
+    .point-card {
+        padding: 12px !important;
+        margin: 10px 0 !important;
+    }
+    
+    .point-card h4 {
+        font-size: 0.9em !important;
+        margin-bottom: 6px !important;
+    }
+    
+    .point-card p {
+        font-size: 0.85em !important;
+    }
+    
+    .highlight {
+        padding: 12px !important;
+        margin: 12px 0 !important;
+    }
+    
+    .highlight p {
+        font-size: 0.85em !important;
+    }
+    
+    .features-list {
+        padding-left: 16px !important;
+        margin: 10px 0 !important;
+    }
+    
+    .features-list li {
+        font-size: 0.75em !important;
+        margin-bottom: 5px !important;
+    }
+    
+    .legend-item {
+        font-size: 0.75em !important;
+        padding: 4px 8px !important;
+    }
+}
+
+/* Móviles muy pequeños (≤360px) */
+@media (max-width: 360px) {
+    .key-points h3 {
+        font-size: 0.9em !important;
+    }
+    
+    .point-card h4 {
+        font-size: 0.85em !important;
+    }
+    
+    .features-list li {
+        font-size: 0.7em !important;
+    }
+}

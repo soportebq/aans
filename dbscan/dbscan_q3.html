@@ -2,8 +2,8 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DBSCAN Pregunta 3: Efectos del Parámetro Epsilon</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, minimum-scale=1.0, maximum-scale=3.0">
+    <title>DBSCAN Pregunta 3: Efectos de Epsilon</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
     <link rel="stylesheet" href="dbscan.css">
 </head>
@@ -11,13 +11,13 @@
     <div class="container">
         <div class="header q3">
             <h1>DBSCAN: Pregunta 3</h1>
-            <p>Efectos del Parámetro Epsilon (ε) en el Clustering</p>
+            <p>Efectos de Diferentes Valores de Epsilon</p>
         </div>
         
         <div class="content">
             <div class="question-box q3">
-                <h2>¿Qué pasa si el valor de epsilon (ε) es muy pequeño o muy grande?</h2>
-                <p><strong>Contexto:</strong> El parámetro epsilon determina el radio de vecindad para cada punto. Su valor tiene un impacto crítico en los resultados del clustering.</p>
+                <h2>¿Cuáles son los efectos de usar diferentes valores de epsilon (ε) en DBSCAN?</h2>
+                <p><strong>Contexto:</strong> El parámetro epsilon define el radio de vecindad para cada punto. Su valor tiene un impacto crítico en los resultados del clustering.</p>
             </div>
 
             <div class="answer-section">
@@ -25,24 +25,30 @@
                 <p>El valor de <strong>epsilon (ε)</strong> es uno de los parámetros más críticos en DBSCAN. Valores inadecuados pueden resultar en clustering incorrecto:</p>
             </div>
 
-            <div class="epsilon-demo">
-                <div class="epsilon-card epsilon-small">
+            <div class="comparison-grid">
+                <div class="epsilon-card epsilon-small base-card">
                     <h3>🔴 Epsilon Muy Pequeño</h3>
-                    <svg id="small-epsilon" width="250" height="200"></svg>
+                    <div class="svg-container">
+                        <svg id="small-epsilon" width="250" height="200"></svg>
+                    </div>
                     <p><strong>Resultado:</strong> Clusters esparcidos son clasificados como ruido</p>
                     <p><em>ε = 15 (muy pequeño)</em></p>
                 </div>
 
-                <div class="epsilon-card epsilon-optimal">
+                <div class="epsilon-card epsilon-optimal base-card">
                     <h3>🟢 Epsilon Óptimo</h3>
-                    <svg id="optimal-epsilon" width="250" height="200"></svg>
+                    <div class="svg-container">
+                        <svg id="optimal-epsilon" width="250" height="200"></svg>
+                    </div>
                     <p><strong>Resultado:</strong> Clusters correctamente identificados</p>
                     <p><em>ε = 35 (óptimo)</em></p>
                 </div>
 
-                <div class="epsilon-card epsilon-large">
+                <div class="epsilon-card epsilon-large base-card">
                     <h3>🟡 Epsilon Muy Grande</h3>
-                    <svg id="large-epsilon" width="250" height="200"></svg>
+                    <div class="svg-container">
+                        <svg id="large-epsilon" width="250" height="200"></svg>
+                    </div>
                     <p><strong>Resultado:</strong> Clusters separados se fusionan incorrectamente</p>
                     <p><em>ε = 80 (muy grande)</em></p>
                 </div>
@@ -50,55 +56,70 @@
 
             <div class="legend">
                 <div class="legend-item">
-                    <div class="legend-color" style="background-color: #3498db;"></div>
+                    <div style="width: 12px; height: 12px; background-color: #3498db; border-radius: 50%; margin-right: 8px;"></div>
                     <span>Cluster 1</span>
                 </div>
                 <div class="legend-item">
-                    <div class="legend-color" style="background-color: #e74c3c;"></div>
+                    <div style="width: 12px; height: 12px; background-color: #e74c3c; border-radius: 50%; margin-right: 8px;"></div>
                     <span>Cluster 2</span>
                 </div>
                 <div class="legend-item">
-                    <div class="legend-color" style="background-color: #f39c12;"></div>
+                    <div style="width: 12px; height: 12px; background-color: #f39c12; border-radius: 50%; margin-right: 8px;"></div>
                     <span>Cluster 3</span>
                 </div>
                 <div class="legend-item">
-                    <div class="legend-color" style="background-color: #95a5a6;"></div>
-                    <span>Ruido/Noise</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" style="background-color: rgba(52,152,219,0.2); border: 2px dashed #3498db;"></div>
-                    <span>Radio ε</span>
+                    <div style="width: 12px; height: 12px; background-color: #95a5a6; border-radius: 50%; margin-right: 8px;"></div>
+                    <span>Noise/Outliers</span>
                 </div>
             </div>
 
-            <div class="interactive-demo">
+            <div class="visual-section">
                 <h3>🎮 Demostración Interactiva</h3>
-                <p>Ajusta el valor de epsilon y observa cómo cambia el clustering:</p>
+                <p>Experimenta con diferentes valores de epsilon y observa cómo cambia el clustering:</p>
                 
                 <div class="controls">
                     <div class="control-group">
-                        <label>Epsilon (ε):</label>
+                        <label for="epsilon-slider">Epsilon (ε):</label>
                         <input type="range" id="epsilon-slider" min="10" max="100" value="35" step="5">
-                        <input type="number" id="epsilon-input" min="10" max="100" value="35" step="5">
+                        <input type="number" id="epsilon-input" value="35" min="10" max="100">
                     </div>
                     <div class="control-group">
-                        <label>MinPts:</label>
-                        <input type="number" id="minpts-input" min="2" max="8" value="3" step="1">
+                        <label for="minpts-input">MinPts:</label>
+                        <input type="range" id="minpts-slider" min="2" max="8" value="3" step="1">
+                        <input type="number" id="minpts-input" value="3" min="2" max="8">
                     </div>
+                    <button class="run-button" onclick="updateClustering()">🔄 Actualizar Clustering</button>
                 </div>
                 
-                <svg id="interactive-demo" width="600" height="400"></svg>
+                <div class="svg-container">
+                    <svg id="interactive-demo" width="600" height="400"></svg>
+                </div>
                 
-                <div id="clustering-stats" style="margin-top: 20px; padding: 15px; background: white; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-                    <strong>Estadísticas actuales:</strong> <span id="stats-text">Epsilon: 35, Clusters: 2, Noise: 3</span>
+                <div class="stats-display" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; margin: 20px 0; text-align: center;">
+                    <div class="stat-item" style="padding: 15px; background: #f8f9fa; border-radius: 8px;">
+                        <div class="stat-value" style="font-size: 1.5em; font-weight: bold; color: #2c3e50;" id="current-epsilon">35</div>
+                        <div class="stat-label" style="font-size: 0.9em; color: #7f8c8d;">Epsilon Actual</div>
+                    </div>
+                    <div class="stat-item" style="padding: 15px; background: #f8f9fa; border-radius: 8px;">
+                        <div class="stat-value" style="font-size: 1.5em; font-weight: bold; color: #2c3e50;" id="clusters-found">3</div>
+                        <div class="stat-label" style="font-size: 0.9em; color: #7f8c8d;">Clusters Encontrados</div>
+                    </div>
+                    <div class="stat-item" style="padding: 15px; background: #f8f9fa; border-radius: 8px;">
+                        <div class="stat-value" style="font-size: 1.5em; font-weight: bold; color: #2c3e50;" id="noise-points">5</div>
+                        <div class="stat-label" style="font-size: 0.9em; color: #7f8c8d;">Puntos de Ruido</div>
+                    </div>
+                    <div class="stat-item" style="padding: 15px; background: #f8f9fa; border-radius: 8px;">
+                        <div class="stat-value" style="font-size: 1.5em; font-weight: bold; color: #2c3e50;" id="core-points">12</div>
+                        <div class="stat-label" style="font-size: 0.9em; color: #7f8c8d;">Core Points</div>
+                    </div>
                 </div>
             </div>
 
-            <div class="effects-grid">
-                <div class="effect-card small-epsilon">
+            <div class="comparison-grid">
+                <div class="effect-card small-epsilon base-card">
                     <h4>🔴 Efectos de Epsilon Muy Pequeño</h4>
-                    <ul class="consequences">
-                        <li><strong>Sobre-fragmentación:</strong> Clusters válidos se dividen en múltiples fragmentos</li>
+                    <ul>
+                        <li><strong>Fragmentación excesiva:</strong> Clusters válidos se dividen en múltiples fragmentos</li>
                         <li><strong>Exceso de ruido:</strong> Muchos puntos se clasifican incorrectamente como outliers</li>
                         <li><strong>Pérdida de estructura:</strong> Patrones reales en los datos no se detectan</li>
                         <li><strong>Clusters muy pequeños:</strong> Solo los puntos más densos forman clusters</li>
@@ -106,9 +127,9 @@
                     </ul>
                 </div>
 
-                <div class="effect-card large-epsilon">
+                <div class="effect-card large-epsilon base-card">
                     <h4>🟡 Efectos de Epsilon Muy Grande</h4>
-                    <ul class="consequences">
+                    <ul>
                         <li><strong>Sobre-agrupación:</strong> Clusters distintos se fusionan incorrectamente</li>
                         <li><strong>Pérdida de separación:</strong> Se pierde la distinción entre grupos diferentes</li>
                         <li><strong>Clusters gigantes:</strong> La mayoría de puntos se agrupan en pocos clusters grandes</li>
@@ -118,20 +139,65 @@
                 </div>
             </div>
 
-            <div class="highlight-box">
-                <h4>Ejemplo Numérico Detallado</h4>
+            <div class="highlight" style="background: #fff3cd; color: #856404; border: 2px solid #ffeaa7; border-radius: 10px; padding: 20px; margin: 20px 0;">
+                <h4>💡 Ejemplo Numérico Detallado</h4>
                 <p><strong>Dataset:</strong> Puntos en un plano 2D con MinPts = 3</p>
                 <ul>
-                    <li><strong>ε = 10 (muy pequeño):</strong> Solo puntos muy cercanos (< 10 unidades) son vecinos. Resultado: 8 clusters pequeños + 15 puntos de ruido</li>
+                    <li><strong>ε = 10 (muy pequeño):</strong> Solo puntos muy cercanos (&lt; 10 unidades) son vecinos. Resultado: 8 clusters pequeños + 15 puntos de ruido</li>
                     <li><strong>ε = 30 (óptimo):</strong> Vecindad razonable. Resultado: 3 clusters bien definidos + 2 outliers reales</li>
                     <li><strong>ε = 80 (muy grande):</strong> Casi todos los puntos son vecinos. Resultado: 1 cluster gigante + 0 outliers</li>
                 </ul>
             </div>
+
+            <div class="step-by-step">
+                <h3>📚 Análisis Paso a Paso del Impacto de Epsilon</h3>
+                
+                <div class="step">
+                    <h5>Paso 1: Epsilon Pequeño (ε = 15)</h5>
+                    <p><strong>Proceso:</strong> Solo puntos muy cercanos (distancia ≤ 15) se consideran vecinos.</p>
+                    <ul>
+                        <li>Muchos puntos no alcanzan MinPts vecinos → Clasificados como noise</li>
+                        <li>Solo núcleos muy densos forman clusters pequeños</li>
+                        <li>Resultado: Alta precisión pero baja cobertura</li>
+                    </ul>
+                </div>
+
+                <div class="step">
+                    <h5>Paso 2: Epsilon Óptimo (ε = 35)</h5>
+                    <p><strong>Proceso:</strong> Puntos a distancia razonable (≤ 35) se consideran vecinos.</p>
+                    <ul>
+                        <li>Equilibrio entre conexividad y separación</li>
+                        <li>Clusters naturales se forman correctamente</li>
+                        <li>Resultado: Balance óptimo entre precisión y cobertura</li>
+                    </ul>
+                </div>
+
+                <div class="step">
+                    <h5>Paso 3: Epsilon Grande (ε = 80)</h5>
+                    <p><strong>Proceso:</strong> Puntos distantes (≤ 80) se consideran vecinos.</p>
+                    <ul>
+                        <li>Casi todos los puntos tienen muchos vecinos</li>
+                        <li>Clusters separados se fusionan en uno solo</li>
+                        <li>Resultado: Alta cobertura pero baja precisión</li>
+                    </ul>
+                </div>
+
+                <div class="step">
+                    <h5>Paso 4: Recomendaciones Prácticas</h5>
+                    <p><strong>Estrategia:</strong> Encontrar el epsilon óptimo mediante experimentación.</p>
+                    <ul>
+                        <li><strong>Empezar conservador:</strong> Comenzar con valores pequeños e incrementar</li>
+                        <li><strong>Usar k-distance plot:</strong> Analizar la distribución de distancias</li>
+                        <li><strong>Validar resultados:</strong> Comparar con conocimiento del dominio</li>
+                        <li><strong>Considerar escalado:</strong> Normalizar datos si es necesario</li>
+                    </ul>
+                </div>
+            </div>
         </div>
         
-        <div class="back-button-container">
+        <div class="back-button-container" style="padding: 20px; text-align: center;">
             <button class="back-button" onclick="history.back()">
-                Volver a la página anterior
+                ← Volver a la página anterior
             </button>
         </div>
     </div>

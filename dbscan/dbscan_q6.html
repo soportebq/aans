@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, minimum-scale=1.0, maximum-scale=3.0">
     <title>DBSCAN Pregunta 6: Conceptos Fundamentales</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
     <link rel="stylesheet" href="dbscan.css">
@@ -18,172 +18,260 @@
             <div class="question-box q6">
                 <h2>¿Cuáles son los conceptos fundamentales en DBSCAN?</h2>
                 <p><strong>Contexto:</strong> DBSCAN clasifica cada punto en una de tres categorías según su densidad local y relación con otros puntos.</p>
+                <ul>
+                    <li><strong>Core Points:</strong> Puntos con suficientes vecinos</li>
+                    <li><strong>Border Points:</strong> Puntos en el borde de clusters</li>
+                    <li><strong>Noise Points:</strong> Puntos aislados o outliers</li>
+                </ul>
             </div>
 
             <div class="answer-section">
                 <h3>Los 3 Conceptos Fundamentales de DBSCAN</h3>
                 <p>DBSCAN clasifica todos los puntos de datos en exactamente <strong>tres categorías mutuamente exclusivas</strong> basándose en la densidad local y los parámetros ε (epsilon) y MinPts.</p>
-            </div>
-
-            <div class="concepts-grid">
-                <div class="concept-card core-card">
-                    <h4>🔵 Core Points (Puntos Núcleo)</h4>
-                    <div class="definition-box">
-                        Un punto p es CORE si:
-                        |N(p)| ≥ MinPts
-                        
-                        Donde N(p) son los vecinos
-                        de p dentro del radio ε
-                    </div>
-                    <p><strong>Características:</strong></p>
-                    <ul>
-                        <li>Tienen ≥ MinPts vecinos en radio ε</li>
-                        <li>Forman el "núcleo" de los clusters</li>
-                        <li>Pueden iniciar nuevos clusters</li>
-                        <li>Se representan como círculos grandes</li>
-                    </ul>
-                </div>
-
-                <div class="concept-card border-card">
-                    <h4>🟡 Border Points (Puntos Frontera)</h4>
-                    <div class="definition-box">
-                        Un punto p es BORDER si:
-                        |N(p)| < MinPts
-                        AND ∃ core point q ∈ N(p)
-                        
-                        Menos vecinos que MinPts
-                        pero cerca de un core point
-                    </div>
-                    <p><strong>Características:</strong></p>
-                    <ul>
-                        <li>Tienen < MinPts vecinos en radio ε</li>
-                        <li>Están en la vecindad de un core point</li>
-                        <li>Pertenecen a un cluster pero no lo inician</li>
-                        <li>Se representan como círculos medianos</li>
-                    </ul>
-                </div>
-
-                <div class="concept-card noise-card">
-                    <h4>🔴 Noise Points (Puntos Ruido)</h4>
-                    <div class="definition-box">
-                        Un punto p es NOISE si:
-                        |N(p)| < MinPts
-                        AND ∀ q ∈ N(p): q is not core
-                        
-                        Pocos vecinos y ningún
-                        core point cerca
-                    </div>
-                    <p><strong>Características:</strong></p>
-                    <ul>
-                        <li>Tienen < MinPts vecinos en radio ε</li>
-                        <li>NO están cerca de ningún core point</li>
-                        <li>Considerados outliers o anomalías</li>
-                        <li>Se representan como círculos pequeños</li>
-                    </ul>
-                </div>
+                
+                <h4>Clasificación jerárquica:</h4>
+                <p><strong>Core Points → Border Points → Noise Points</strong></p>
+                <p>La clasificación sigue un orden específico donde primero se identifican los core points, luego los border points adyacentes, y finalmente el resto se marca como noise.</p>
             </div>
 
             <div class="demo-section">
-                <h3>🎮 Demostración Interactiva de Conceptos</h3>
-                <p>Ajusta los parámetros y observa cómo cambian las clasificaciones:</p>
+                <h3>🔬 Demostración Interactiva: Clasificación de Puntos</h3>
+                <p><strong>Ajusta los parámetros para ver cómo afectan la clasificación de puntos:</strong></p>
                 
-                <div class="controls">
+                <div class="controls-container">
                     <div class="control-group">
-                        <label>Epsilon (ε)</label>
-                        <input type="range" id="eps-slider" min="30" max="80" value="50" step="5">
-                        <span id="eps-value">50</span>
+                        <label for="epsilonSlider">Epsilon (ε): <span id="epsilonValue">45</span></label>
+                        <input type="range" id="epsilonSlider" min="20" max="80" value="45" step="5">
+                        <small>Radio de vecindario - Cambios en tiempo real</small>
                     </div>
+                    
                     <div class="control-group">
-                        <label>MinPts</label>
-                        <input type="range" id="minpts-slider" min="2" max="6" value="3" step="1">
-                        <span id="minpts-value">3</span>
+                        <label for="minPtsSlider">MinPts: <span id="minPtsValue">4</span></label>
+                        <input type="range" id="minPtsSlider" min="2" max="7" value="4" step="1">
+                        <small>Puntos mínimos para ser core - Cambios en tiempo real</small>
                     </div>
+                    
+                    <div class="control-group">
+                        <label>
+                            <input type="checkbox" id="showEpsilonCircles" checked>
+                            Mostrar círculos de epsilon
+                        </label>
+                    </div>
+                    
+                    <button id="resetDemo" class="demo-button">Reiniciar a Valores Óptimos</button>
                 </div>
+
+                <div id="concepts-visualization" class="visualization-container"></div>
                 
-                <svg id="concepts-demo" width="650" height="400"></svg>
-                
-                <div class="stats-display">
-                    <div class="stat-item">
-                        <div class="stat-value" id="current-eps">50</div>
-                        <div class="stat-label">Epsilon</div>
+                <div class="results-info">
+                    <div class="result-item">
+                        <strong>Core points:</strong> <span id="coreCount">-</span>
+                        <small>(≥ <span id="minPtsDisplay">4</span> vecinos)</small>
                     </div>
-                    <div class="stat-item">
-                        <div class="stat-value" id="current-minpts">3</div>
-                        <div class="stat-label">MinPts</div>
+                    <div class="result-item">
+                        <strong>Border points:</strong> <span id="borderCount">-</span>
+                        <small>(< MinPts vecinos, cerca de core)</small>
                     </div>
-                    <div class="stat-item">
-                        <div class="stat-value" id="core-count">8</div>
-                        <div class="stat-label">Core Points</div>
+                    <div class="result-item">
+                        <strong>Noise points:</strong> <span id="noiseCount">-</span>
+                        <small>(aislados)</small>
                     </div>
-                    <div class="stat-item">
-                        <div class="stat-value" id="border-count">12</div>
-                        <div class="stat-label">Border Points</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-value" id="noise-count">5</div>
-                        <div class="stat-label">Noise Points</div>
+                    <div class="result-item">
+                        <strong>Clusters formados:</strong> <span id="clusterCount">-</span>
                     </div>
                 </div>
             </div>
 
-            <div class="legend">
-                <div class="legend-item">
-                    <div class="legend-color" style="background-color: #3498db;"></div>
-                    <span>Core Points</span>
+            <div class="concepts-grid">
+                <div class="concept-card core-card base-card">
+                    <h4>🔵 Core Points (Puntos Núcleo)</h4>
+                    <div class="definition-box">
+                        <strong>Definición formal:</strong><br>
+                        Un punto p es CORE si:<br>
+                        |N(p)| ≥ MinPts<br><br>
+                        Donde N(p) son los vecinos de p dentro del radio ε
+                    </div>
+                    <p><strong>Características principales:</strong></p>
+                    <ul>
+                        <li>Tienen ≥ MinPts vecinos en radio ε</li>
+                        <li>Forman el "núcleo" de los clusters</li>
+                        <li>Pueden iniciar la formación de clusters</li>
+                        <li>Son puntos de alta densidad local</li>
+                        <li>Nunca son clasificados como ruido</li>
+                    </ul>
+                    <p><strong>Función en el algoritmo:</strong> Puntos de partida para la expansión de clusters mediante búsqueda en profundidad.</p>
                 </div>
-                <div class="legend-item">
-                    <div class="legend-color" style="background-color: #f39c12;"></div>
-                    <span>Border Points</span>
+
+                <div class="concept-card border-card base-card">
+                    <h4>🟡 Border Points (Puntos Frontera)</h4>
+                    <div class="definition-box">
+                        <strong>Definición formal:</strong><br>
+                        Un punto p es BORDER si:<br>
+                        |N(p)| < MinPts AND<br>
+                        ∃ core point q donde d(p,q) ≤ ε
+                    </div>
+                    <p><strong>Características principales:</strong></p>
+                    <ul>
+                        <li>Tienen < MinPts vecinos (no son core)</li>
+                        <li>Están dentro del radio ε de al menos un core point</li>
+                        <li>Forman la "frontera" de los clusters</li>
+                        <li>Pueden pertenecer a múltiples clusters (resolución por orden)</li>
+                        <li>Conectan clusters con su entorno</li>
+                    </ul>
+                    <p><strong>Función en el algoritmo:</strong> Extienden los clusters desde los core points hasta sus límites naturales.</p>
                 </div>
-                <div class="legend-item">
-                    <div class="legend-color" style="background-color: #e74c3c;"></div>
-                    <span>Noise Points</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" style="background-color: rgba(52,152,219,0.2); border: 2px dashed #3498db;"></div>
-                    <span>Radio ε</span>
+
+                <div class="concept-card noise-card base-card">
+                    <h4>🔴 Noise Points (Puntos Ruido)</h4>
+                    <div class="definition-box">
+                        <strong>Definición formal:</strong><br>
+                        Un punto p es NOISE si:<br>
+                        |N(p)| < MinPts AND<br>
+                        ∄ core point q donde d(p,q) ≤ ε
+                    </div>
+                    <p><strong>Características principales:</strong></p>
+                    <ul>
+                        <li>Tienen < MinPts vecinos (no son core)</li>
+                        <li>No están cerca de ningún core point</li>
+                        <li>Representan outliers o anomalías</li>
+                        <li>No pertenecen a ningún cluster</li>
+                        <li>Pueden convertirse en border si aparecen core points cercanos</li>
+                    </ul>
+                    <p><strong>Función en el algoritmo:</strong> Identifican datos atípicos que no se ajustan a ningún patrón de clustering.</p>
                 </div>
             </div>
 
-            <div class="highlight-box">
-                <h4>Conceptos Clave para Recordar</h4>
-                <ul>
-                    <li><strong>Densidad Local:</strong> Los conceptos se basan en cuántos vecinos tiene cada punto</li>
-                    <li><strong>Parámetros Críticos:</strong> ε determina "cercanía", MinPts determina "densidad suficiente"</li>
-                    <li><strong>Jerarquía:</strong> Core > Border > Noise en términos de importancia para clustering</li>
-                    <li><strong>Determinismo:</strong> Dado ε y MinPts, la clasificación es determinística</li>
-                    <li><strong>Clusters:</strong> Se forman conectando core points densamente alcanzables</li>
-                </ul>
+            <div class="process-flow base-card">
+                <h4>🔄 Proceso de Clasificación Paso a Paso</h4>
+                <div class="flow-steps">
+                    <div class="step">
+                        <span class="step-number">1</span>
+                        <div class="step-content">
+                            <h5>Cálculo de Vecindarios</h5>
+                            <p>Para cada punto p, encontrar todos los puntos q donde d(p,q) ≤ ε</p>
+                        </div>
+                    </div>
+                    
+                    <div class="step">
+                        <span class="step-number">2</span>
+                        <div class="step-content">
+                            <h5>Identificación de Core Points</h5>
+                            <p>Marcar como CORE todos los puntos con |N(p)| ≥ MinPts</p>
+                        </div>
+                    </div>
+                    
+                    <div class="step">
+                        <span class="step-number">3</span>
+                        <div class="step-content">
+                            <h5>Expansión de Clusters</h5>
+                            <p>Desde cada core point no visitado, expandir cluster incluyendo vecinos</p>
+                        </div>
+                    </div>
+                    
+                    <div class="step">
+                        <span class="step-number">4</span>
+                        <div class="step-content">
+                            <h5>Clasificación de Border Points</h5>
+                            <p>Puntos no-core dentro de ε de algún core point</p>
+                        </div>
+                    </div>
+                    
+                    <div class="step">
+                        <span class="step-number">5</span>
+                        <div class="step-content">
+                            <h5>Identificación de Noise</h5>
+                            <p>Puntos restantes que no son core ni border</p>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <div class="answer-section">
-                <h3>📝 Resumen Completo</h3>
-                
-                <h4>🎯 Los Tres Conceptos Fundamentales:</h4>
-                <ol>
-                    <li><strong>Core Points:</strong> Puntos con densidad suficiente (≥ MinPts vecinos)</li>
-                    <li><strong>Border Points:</strong> Puntos con baja densidad pero cerca de core points</li>
-                    <li><strong>Noise Points:</strong> Puntos aislados que no califican para ningún cluster</li>
-                </ol>
+            <div class="comparison-grid">
+                <div class="comparison-card sensitivity-card base-card">
+                    <h4>📊 Sensibilidad a Parámetros</h4>
+                    
+                    <h5>Efecto de ε (epsilon):</h5>
+                    <ul>
+                        <li><strong>ε pequeño:</strong> Más noise, menos core points</li>
+                        <li><strong>ε grande:</strong> Menos noise, más core points</li>
+                        <li><strong>ε óptimo:</strong> Balance natural entre categorías</li>
+                    </ul>
+                    
+                    <h5>Efecto de MinPts:</h5>
+                    <ul>
+                        <li><strong>MinPts bajo:</strong> Más core points, clusters frágiles</li>
+                        <li><strong>MinPts alto:</strong> Menos core points, más noise</li>
+                        <li><strong>MinPts balanceado:</strong> Clusters robustos</li>
+                    </ul>
+                </div>
 
-                <h4>🔄 Proceso de Clasificación:</h4>
-                <p>El algoritmo evalúa cada punto según su <em>densidad local</em> y <em>proximidad a puntos densos</em>, creando una clasificación completa y mutuamente exclusiva de todos los datos.</p>
+                <div class="comparison-card applications-card base-card">
+                    <h4>🎯 Aplicaciones Prácticas</h4>
+                    
+                    <h5>Análisis de Core Points:</h5>
+                    <ul>
+                        <li><strong>Marketing:</strong> Clientes influyentes en segmentos</li>
+                        <li><strong>Redes sociales:</strong> Usuarios centrales en comunidades</li>
+                        <li><strong>Biología:</strong> Centros de alta actividad genética</li>
+                    </ul>
+                    
+                    <h5>Detección de Noise:</h5>
+                    <ul>
+                        <li><strong>Fraude:</strong> Transacciones anómalas</li>
+                        <li><strong>Calidad:</strong> Productos defectuosos</li>
+                        <li><strong>Medicina:</strong> Casos atípicos para investigación</li>
+                    </ul>
+                </div>
 
-                <h4>🎨 Importancia Práctica:</h4>
-                <ul>
-                    <li><strong>Core points</strong> definen la estructura principal de los clusters</li>
-                    <li><strong>Border points</strong> extienden los clusters a regiones menos densas</li>
-                    <li><strong>Noise points</strong> identifican automáticamente outliers y anomalías</li>
-                </ul>
-
-                <p><strong>Esta clasificación tripartita es lo que hace a DBSCAN único</strong> entre los algoritmos de clustering, permitiendo detección automática de outliers y clusters de forma arbitraria.</p>
+                <div class="comparison-card interpretation-card base-card">
+                    <h4>💡 Interpretación de Resultados</h4>
+                    
+                    <h5>Indicadores de Calidad:</h5>
+                    <ul>
+                        <li><strong>Ratio Core/Total:</strong> 20-40% indica buena densidad</li>
+                        <li><strong>Ratio Noise/Total:</strong> 5-15% es típico en datos reales</li>
+                        <li><strong>Border Points:</strong> Deben formar "coronas" alrededor de cores</li>
+                    </ul>
+                    
+                    <h5>Señales de Alerta:</h5>
+                    <ul>
+                        <li><strong>>60% noise:</strong> ε muy pequeño o MinPts muy alto</li>
+                        <li><strong><5% noise:</strong> ε muy grande, clusters fusionados</li>
+                        <li><strong>Solo core points:</strong> MinPts demasiado bajo</li>
+                    </ul>
+                </div>
             </div>
-        </div>
-        
-        <div class="back-button-container">
-            <button class="back-button" onclick="history.back()">
-                Volver a la página anterior
-            </button>
+
+            <div class="highlight-box base-card">
+                <h4>🎓 Puntos Clave para Recordar</h4>
+                <div class="key-points-grid">
+                    <div class="key-point">
+                        <h5>🎯 Clasificación Mutuamente Exclusiva</h5>
+                        <p>Cada punto pertenece a exactamente una categoría: core, border, o noise. No hay solapamiento.</p>
+                    </div>
+                    
+                    <div class="key-point">
+                        <h5>📐 Dependencia de Parámetros</h5>
+                        <p>La clasificación depende completamente de ε y MinPts. Pequeños cambios pueden alterar dramáticamente los resultados.</p>
+                    </div>
+                    
+                    <div class="key-point">
+                        <h5>🔄 Orden de Determinación</h5>
+                        <p>Primero se determinan core points, luego border points, y finalmente noise points por eliminación.</p>
+                    </div>
+                    
+                    <div class="key-point">
+                        <h5>🌐 Contexto Geométrico</h5>
+                        <p>Core points = centros densos, Border points = fronteras, Noise points = outliers aislados.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="back-button-container">
+                <button class="back-button" onclick="history.back()">
+                    Volver a la página anterior
+                </button>
+            </div>
         </div>
     </div>
 

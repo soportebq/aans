@@ -2,10 +2,11 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, minimum-scale=1.0, maximum-scale=3.0">
     <title>DBSCAN Pregunta 1: Tipo de Algoritmo</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
     <link rel="stylesheet" href="dbscan.css">
+    <link rel="stylesheet" href="dbscan_q1.css">
 </head>
 <body>
     <div class="container">
@@ -32,115 +33,74 @@
                 <div class="highlight">
                     <strong>🎯 Explicación:</strong> DBSCAN (Density-Based Spatial Clustering of Applications with Noise) es un algoritmo de clustering basado en densidad que agrupa puntos que están densamente empaquetados, mientras marca como outliers los puntos que se encuentran solos en regiones de baja densidad.
                 </div>
-            </div>
 
-            <div class="comparison-grid">
-                <div class="algorithm-card density-based">
-                    <h4>🔴 Basado en Densidad</h4>
-                    <p><strong>DBSCAN, OPTICS</strong></p>
-                    <ul class="features-list">
-                        <li>Forma clusters basándose en la densidad local</li>
-                        <li>Puede encontrar clusters de forma arbitraria</li>
-                        <li>Identifica automáticamente outliers</li>
-                        <li>No requiere especificar número de clusters</li>
-                        <li>Robusto ante ruido</li>
-                    </ul>
+                <h4>1. Características Distintivas de DBSCAN:</h4>
+                <div class="comparison-grid">
+                    <div class="algorithm-card density-based base-card">
+                        <h4>🔘 Basado en Densidad</h4>
+                        <p><strong>DBSCAN</strong> - Encuentra clusters de alta densidad</p>
+                        <ul class="features-list">
+                            <li>Detecta clusters de formas arbitrarias</li>
+                            <li>Identifica automáticamente outliers</li>
+                            <li>No requiere número predefinido de clusters</li>
+                            <li>Robusto contra ruido en los datos</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="algorithm-card partitioning base-card">
+                        <h4>📊 Por Partición</h4>
+                        <p><strong>K-Means</strong> - Divide el espacio en regiones</p>
+                        <ul class="features-list">
+                            <li>Clusters esféricos de tamaño similar</li>
+                            <li>Requiere especificar K clusters</li>
+                            <li>Sensible a outliers</li>
+                            <li>Algoritmo determinístico</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="algorithm-card hierarchical base-card">
+                        <h4>🌲 Jerárquico</h4>
+                        <p><strong>HAC</strong> - Construye jerarquía de clusters</p>
+                        <ul class="features-list">
+                            <li>Crea dendrograma de agrupaciones</li>
+                            <li>Puede ser aglomerativo o divisivo</li>
+                            <li>No requiere K predefinido</li>
+                            <li>Complejidad computacional alta</li>
+                        </ul>
+                    </div>
                 </div>
 
-                <div class="algorithm-card partitioning">
-                    <h4>🔵 Por Partición</h4>
-                    <p><strong>K-Means, K-Medoids</strong></p>
-                    <ul class="features-list">
-                        <li>Divide datos en k particiones</li>
-                        <li>Clusters esféricamente separados</li>
-                        <li>Requiere especificar número de clusters</li>
-                        <li>Sensible a outliers</li>
-                        <li>Eficiente computacionalmente</li>
-                    </ul>
+                <div class="key-points">
+                    <h3>🔑 Puntos Clave del Algoritmo DBSCAN</h3>
+                    
+                    <div class="point-card">
+                        <h4>📍 Conceptos Fundamentales</h4>
+                        <p><strong>Epsilon (ε):</strong> Radio de vecindad para cada punto</p>
+                        <p><strong>MinPts:</strong> Número mínimo de puntos para formar un cluster</p>
+                        <p><strong>Core Point:</strong> Punto con ≥ MinPts vecinos en radio ε</p>
+                        <p><strong>Border Point:</strong> Punto en vecindad de un core point</p>
+                        <p><strong>Noise:</strong> Puntos que no son core ni border</p>
+                    </div>
+                    
+                    <div class="point-card">
+                        <h4>⚡ Ventajas Principales</h4>
+                        <p><strong>Formas Arbitrarias:</strong> No asume clusters circulares</p>
+                        <p><strong>Detección de Ruido:</strong> Identifica outliers automáticamente</p>
+                        <p><strong>Autodeterminación:</strong> Encuentra el número óptimo de clusters</p>
+                        <p><strong>Reproducibilidad:</strong> Resultados consistentes con mismos parámetros</p>
+                    </div>
+                    
+                    <div class="point-card">
+                        <h4>🎯 Casos de Uso Ideales</h4>
+                        <p><strong>Imágenes:</strong> Segmentación de regiones con formas complejas</p>
+                        <p><strong>Geolocalización:</strong> Análisis de patrones espaciales</p>
+                        <p><strong>Fraud Detection:</strong> Identificación de comportamientos anómalos</p>
+                        <p><strong>Bioinformática:</strong> Análisis de secuencias de genes</p>
+                    </div>
                 </div>
 
-                <div class="algorithm-card hierarchical">
-                    <h4>🟡 Jerárquico</h4>
-                    <p><strong>Agglomerative, Divisive</strong></p>
-                    <ul class="features-list">
-                        <li>Crea jerarquía de clusters</li>
-                        <li>Produce dendrograma</li>
-                        <li>No requiere k predefinido</li>
-                        <li>Computacionalmente costoso</li>
-                        <li>Difícil de manejar ruido</li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="visual-section">
-                <h3>🎨 Visualización: Comportamiento de DBSCAN</h3>
-                <p>El siguiente diagrama muestra cómo DBSCAN identifica clusters basándose en la densidad:</p>
+                <h4>2. Comparación Detallada con Otros Métodos:</h4>
                 
-                <div class="svg-container">
-                    <svg id="dbscan-demo" width="600" height="400"></svg>
-                </div>
-                
-                <div class="legend">
-                    <div class="legend-item">
-                        <div class="legend-color" style="background-color: #3498db;"></div>
-                        <span>Core Points</span>
-                    </div>
-                    <div class="legend-item">
-                        <div class="legend-color" style="background-color: #f39c12;"></div>
-                        <span>Border Points</span>
-                    </div>
-                    <div class="legend-item">
-                        <div class="legend-color" style="background-color: #e74c3c;"></div>
-                        <span>Noise/Outliers</span>
-                    </div>
-                    <div class="legend-item">
-                        <div class="legend-color" style="background-color: rgba(52,152,219,0.2); border: 2px dashed #3498db;"></div>
-                        <span>Epsilon Radius</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="key-points">
-                <h3>🔑 Puntos Clave sobre DBSCAN</h3>
-                <div class="points-grid">
-                    <div class="point-card">
-                        <h4>📊 Parámetros</h4>
-                        <p><strong>Epsilon (ε):</strong> Radio de vecindad</p>
-                        <p><strong>MinPts:</strong> Mínimo de puntos para formar un cluster</p>
-                    </div>
-                    <div class="point-card">
-                        <h4>🎯 Tipos de Puntos</h4>
-                        <p><strong>Core:</strong> ≥ MinPts en radio ε</p>
-                        <p><strong>Border:</strong> En radio ε de un core point</p>
-                        <p><strong>Noise:</strong> Ni core ni border</p>
-                    </div>
-                    <div class="point-card">
-                        <h4>🚀 Ventajas</h4>
-                        <p>• Clusters de forma arbitraria</p>
-                        <p>• Detección automática de outliers</p>
-                        <p>• No requiere k predefinido</p>
-                    </div>
-                    <div class="point-card">
-                        <h4>⚠️ Limitaciones</h4>
-                        <p>• Sensible a parámetros ε y MinPts</p>
-                        <p>• Problemas con densidades variables</p>
-                        <p>• Dificultad en alta dimensionalidad</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="answer-section">
-                <h3>📚 Desarrollo Paso a Paso</h3>
-                
-                <h4>1. Definición Fundamental:</h4>
-                <p>DBSCAN es un algoritmo de <strong>clustering basado en densidad</strong> porque:</p>
-                <ul>
-                    <li>Agrupa puntos que están <em>densamente conectados</em></li>
-                    <li>Define clusters como regiones de alta densidad separadas por regiones de baja densidad</li>
-                    <li>No asume formas específicas para los clusters (pueden ser arbitrarias)</li>
-                </ul>
-
-                <h4>2. Diferencias Clave con Otros Tipos:</h4>
                 <div style="margin: 20px 0;">
                     <p><strong>vs. Partición (K-Means):</strong></p>
                     <ul>
@@ -167,11 +127,42 @@
                     <li><strong>Identificación de Noise:</strong> Puntos que no son core ni border</li>
                 </ol>
             </div>
+
+            <div class="visual-section">
+                <h3>🎨 Visualización Interactiva</h3>
+                <p>La siguiente visualización muestra cómo DBSCAN identifica clusters basados en densidad:</p>
+                
+                <div class="svg-container">
+                    <svg id="dbscan-visualization"></svg>
+                </div>
+                
+                <div class="controls">
+                    <div class="control-group">
+                        <label for="epsilon">Epsilon (ε):</label>
+                        <input type="range" id="epsilon" min="20" max="80" value="40" step="5">
+                        <input type="number" id="epsilon-value" value="40" min="20" max="80">
+                    </div>
+                    <div class="control-group">
+                        <label for="minpts">MinPts:</label>
+                        <input type="range" id="minpts" min="2" max="8" value="4" step="1">
+                        <input type="number" id="minpts-value" value="4" min="2" max="8">
+                    </div>
+                    <button class="run-button" onclick="createDBSCANVisualization()">🔄 Actualizar Clusters</button>
+                </div>
+                
+                <div class="legend">
+                    <div class="legend-item core">Core Points</div>
+                    <div class="legend-item border">Border Points</div>
+                    <div class="legend-item noise">Noise Points</div>
+                    <div class="legend-item cluster1">Cluster 1</div>
+                    <div class="legend-item cluster2">Cluster 2</div>
+                </div>
+            </div>
         </div>
         
-        <div class="back-button-container">
+        <div class="back-button-container" style="padding: 20px; text-align: center;">
             <button class="back-button" onclick="history.back()">
-                Volver a la página anterior
+                ← Volver a la página anterior
             </button>
         </div>
     </div>

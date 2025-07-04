@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, minimum-scale=1.0, maximum-scale=3.0">
     <title>DBSCAN Pregunta 4: Sensibilidad a Parámetros</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
     <link rel="stylesheet" href="dbscan.css">
@@ -11,189 +11,174 @@
     <div class="container">
         <div class="header q4">
             <h1>DBSCAN: Pregunta 4</h1>
-            <p>¿Es DBSCAN Sensible a los Valores de Epsilon y MinPts?</p>
+            <p>¿Cómo Afectan los Parámetros eps y minPts a los Resultados?</p>
         </div>
         
         <div class="content">
             <div class="question-box q4">
-                <h2>¿Es el algoritmo DBSCAN muy sensible a los valores de epsilon y min_pts?</h2>
-                <p><strong>Contexto:</strong> La sensibilidad a parámetros determina qué tan robustos son los resultados ante pequeños cambios en la configuración.</p>
+                <h2>¿Cómo afectan los parámetros eps (epsilon) y minPts a los resultados de DBSCAN?</h2>
+                <p><strong>Contexto:</strong> DBSCAN es altamente sensible a sus dos parámetros principales. Una mala selección puede resultar en clustering muy deficiente o completamente inútil.</p>
+                <ul>
+                    <li><strong>eps (epsilon):</strong> Define el radio máximo de vecindario</li>
+                    <li><strong>minPts:</strong> Define el número mínimo de puntos para formar un cluster</li>
+                </ul>
             </div>
 
             <div class="answer-section">
-                <h3>Respuesta: SÍ, DBSCAN es MUY sensible a ambos parámetros</h3>
-                <p><strong>Conclusión:</strong> Pequeñas variaciones en epsilon (ε) o MinPts pueden cambiar dramáticamente los resultados del clustering. Esta es una <em>limitación significativa</em> del algoritmo que requiere cuidadosa selección de parámetros.</p>
+                <h3>Respuesta: Los parámetros determinan completamente la calidad del clustering</h3>
+                
+                <h4>Efecto de eps (epsilon):</h4>
+                <p><strong>Epsilon muy pequeño:</strong> Muchos clusters pequeños y gran cantidad de ruido</p>
+                <p><strong>Epsilon muy grande:</strong> Pocos clusters grandes, fusión no deseada</p>
+                <p><strong>Epsilon óptimo:</strong> Balance entre separación y cohesión natural</p>
+                
+                <h4>Efecto de minPts:</h4>
+                <p><strong>minPts bajo (2-3):</strong> Clusters menos robustos, sensible a ruido</p>
+                <p><strong>minPts alto (>10):</strong> Solo clusters muy densos, más ruido clasificado</p>
+                <p><strong>minPts recomendado:</strong> Típicamente 4-6 para datos 2D, 2×dimensiones para datos n-D</p>
             </div>
 
             <div class="demo-section">
-                <h3>🎮 Demostración Interactiva de Sensibilidad</h3>
-                <p>Cambia los parámetros y observa cómo los resultados varían significativamente:</p>
+                <h3>🔬 Demostración Interactiva: Sensibilidad de Parámetros</h3>
+                <p><strong>Experimenta con diferentes valores para ver su impacto:</strong></p>
                 
-                <div class="controls">
+                <div class="controls-container">
                     <div class="control-group">
-                        <label>Epsilon (ε)</label>
-                        <input type="range" id="eps-slider" min="20" max="80" value="35" step="5">
-                        <input type="number" id="eps-input" min="20" max="80" value="35" step="5">
+                        <label for="epsilonSlider">Epsilon (ε): <span id="epsilonValue">35</span></label>
+                        <input type="range" id="epsilonSlider" min="10" max="100" value="35" step="5">
+                        <small>Rango: 10-100 píxeles</small>
                     </div>
+                    
                     <div class="control-group">
-                        <label>MinPts</label>
-                        <input type="range" id="minpts-slider" min="2" max="6" value="3" step="1">
-                        <input type="number" id="minpts-input" min="2" max="6" value="3" step="1">
+                        <label for="minPtsSlider">MinPts: <span id="minPtsValue">4</span></label>
+                        <input type="range" id="minPtsSlider" min="2" max="8" value="4" step="1">
+                        <small>Rango: 2-8 puntos</small>
                     </div>
+                    
+                    <button id="resetDemo" class="demo-button secondary">Reiniciar</button>
                 </div>
-                
-                <svg id="main-demo" width="600" height="350"></svg>
-                
-                <div class="stats-display">
-                    <div class="stat-item">
-                        <div class="stat-value" id="current-eps">35</div>
-                        <div class="stat-label">Epsilon</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-value" id="current-minpts">3</div>
-                        <div class="stat-label">MinPts</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-value" id="current-clusters">3</div>
-                        <div class="stat-label">Clusters</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-value" id="current-noise">2</div>
-                        <div class="stat-label">Ruido</div>
-                    </div>
-                </div>
-            </div>
 
-            <div class="legend">
-                <div class="legend-item">
-                    <div class="legend-color" style="background-color: #3498db;"></div>
-                    <span>Cluster 1</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" style="background-color: #e74c3c;"></div>
-                    <span>Cluster 2</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" style="background-color: #f39c12;"></div>
-                    <span>Cluster 3</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" style="background-color: #9b59b6;"></div>
-                    <span>Cluster 4</span>
-                </div>
-                <div class="legend-item">
-                    <div class="legend-color" style="background-color: #95a5a6;"></div>
-                    <span>Ruido</span>
+                <div id="sensitivity-visualization" class="visualization-container"></div>
+                
+                <div class="results-info">
+                    <div class="result-item">
+                        <strong>Clusters encontrados:</strong> <span id="clusterCount">-</span>
+                    </div>
+                    <div class="result-item">
+                        <strong>Puntos de ruido:</strong> <span id="noiseCount">-</span>
+                    </div>
+                    <div class="result-item">
+                        <strong>Core points:</strong> <span id="coreCount">-</span>
+                    </div>
+                    <div class="result-item">
+                        <strong>Border points:</strong> <span id="borderCount">-</span>
+                    </div>
                 </div>
             </div>
 
             <div class="comparison-grid">
-                <div class="comparison-card before-card">
-                    <h4 style="color: #3498db;">📊 Configuración Base</h4>
-                    <svg id="base-config" width="200" height="150"></svg>
-                    <p><strong>ε=35, MinPts=3</strong></p>
-                    <p>3 clusters, 2 ruido</p>
+                <div class="comparison-card epsilon-small base-card">
+                    <h4>🔴 Epsilon Muy Pequeño (15)</h4>
+                    <p><strong>Resultado:</strong> Muchos clusters diminutos</p>
+                    <ul>
+                        <li>Hasta 8-10 clusters separados</li>
+                        <li>60-70% de puntos clasificados como ruido</li>
+                        <li>Clusters no capturan estructura real</li>
+                        <li>Pérdida de conectividad natural</li>
+                    </ul>
+                    <p><strong>Uso:</strong> Solo para datos extremadamente densos</p>
                 </div>
 
-                <div class="comparison-card current-card">
-                    <h4 style="color: #e74c3c;">🔄 Pequeño Cambio</h4>
-                    <svg id="small-change" width="200" height="150"></svg>
-                    <p><strong>ε=39, MinPts=3</strong></p>
-                    <p>2 clusters, 1 ruido</p>
+                <div class="comparison-card epsilon-optimal base-card">
+                    <h4>🟢 Epsilon Óptimo (30-40)</h4>
+                    <p><strong>Resultado:</strong> Clustering balanceado y natural</p>
+                    <ul>
+                        <li>4-5 clusters bien definidos</li>
+                        <li>10-15% de ruido legítimo</li>
+                        <li>Respeta estructura inherente</li>
+                        <li>Core/border points balanceados</li>
+                    </ul>
+                    <p><strong>Uso:</strong> Ideal para la mayoría de aplicaciones</p>
                 </div>
 
-                <div class="comparison-card stable-card">
-                    <h4 style="color: #27ae60;">⚖️ Cambio en MinPts</h4>
-                    <svg id="minpts-change" width="200" height="150"></svg>
-                    <p><strong>ε=35, MinPts=4</strong></p>
-                    <p>2 clusters, 6 ruido</p>
-                </div>
-            </div>
-
-            <div class="sensitivity-examples">
-                <h3>⚠️ Ejemplos Reales de Sensibilidad</h3>
-                <div class="example-grid">
-                    <div class="example-card">
-                        <h5>📈 Cambio en Epsilon (+11%)</h5>
-                        <p><strong>De:</strong> ε = 35 → ε = 39</p>
-                        <p><strong>Resultado:</strong> 3 clusters → 2 clusters</p>
-                        <p><strong>Impacto:</strong> 33% menos clusters</p>
-                    </div>
-                    
-                    <div class="example-card">
-                        <h5>📊 Cambio en MinPts (+33%)</h5>
-                        <p><strong>De:</strong> MinPts = 3 → MinPts = 4</p>
-                        <p><strong>Resultado:</strong> 2 ruido → 6 ruido</p>
-                        <p><strong>Impacto:</strong> 300% más ruido</p>
-                    </div>
-                    
-                    <div class="example-card">
-                        <h5>🔄 Cambio Combinado</h5>
-                        <p><strong>De:</strong> (35,3) → (33,4)</p>
-                        <p><strong>Resultado:</strong> Clustering completamente diferente</p>
-                        <p><strong>Impacto:</strong> Estructura irreconocible</p>
-                    </div>
+                <div class="comparison-card epsilon-large base-card">
+                    <h4>🟡 Epsilon Muy Grande (80+)</h4>
+                    <p><strong>Resultado:</strong> Pocos clusters masivos</p>
+                    <ul>
+                        <li>1-2 clusters gigantes</li>
+                        <li>Fusión no deseada de grupos</li>
+                        <li>Pérdida de granularidad</li>
+                        <li>Casi todos son core points</li>
+                    </ul>
+                    <p><strong>Uso:</strong> Datos muy dispersos o primera aproximación</p>
                 </div>
             </div>
 
-            <div class="highlight-box">
-                <h4>¿Por Qué Es Tan Sensible?</h4>
-                <p><strong>Epsilon (ε):</strong> Determina directamente qué puntos son "vecinos". Un pequeño aumento puede hacer que puntos distantes se conecten, fusionando clusters separados.</p>
-                <p><strong>MinPts:</strong> Define el umbral para ser un "core point". Aumentarlo hace que menos puntos califiquen como cores, fragmentando clusters o convirtiéndolos en ruido.</p>
-                <p><strong>Efecto multiplicativo:</strong> Ambos parámetros interactúan, amplificando los efectos de los cambios individuales.</p>
+            <div class="effects-grid">
+                <div class="effect-card minpts-low base-card">
+                    <h4>⚠️ MinPts Bajo (2-3)</h4>
+                    <p><strong>Efectos negativos:</strong></p>
+                    <ul>
+                        <li>Clusters frágiles y poco robustos</li>
+                        <li>Sensibilidad extrema al ruido</li>
+                        <li>Formación de "clusters fantasma"</li>
+                        <li>Inestabilidad en resultados</li>
+                    </ul>
+                    <p><strong>Resultado:</strong> Clustering poco confiable</p>
+                </div>
+
+                <div class="effect-card minpts-optimal base-card">
+                    <h4>✅ MinPts Balanceado (4-6)</h4>
+                    <p><strong>Efectos positivos:</strong></p>
+                    <ul>
+                        <li>Clusters estadísticamente robustos</li>
+                        <li>Resistencia adecuada al ruido</li>
+                        <li>Balance core/border apropiado</li>
+                        <li>Resultados estables y reproducibles</li>
+                    </ul>
+                    <p><strong>Resultado:</strong> Clustering óptimo y confiable</p>
+                </div>
+
+                <div class="effect-card minpts-high base-card">
+                    <h4>🔵 MinPts Alto (7+)</h4>
+                    <p><strong>Efectos en clustering:</strong></p>
+                    <ul>
+                        <li>Solo clusters muy densos sobreviven</li>
+                        <li>Incremento significativo de ruido</li>
+                        <li>Pérdida de clusters legítimos</li>
+                        <li>Sesgo hacia alta densidad</li>
+                    </ul>
+                    <p><strong>Resultado:</strong> Clustering conservador y restrictivo</p>
+                </div>
             </div>
 
-            <div class="tips-section">
-                <h3>🛠️ Estrategias para Manejar la Sensibilidad</h3>
+            <div class="guidance-section base-card">
+                <h3>🎯 Guía para Selección de Parámetros</h3>
                 
-                <h4>1. Métodos de Selección de Epsilon:</h4>
-                <ul>
-                    <li><strong>K-distance plot:</strong> Graficar distancias al k-ésimo vecino y buscar el "codo"</li>
-                    <li><strong>Análisis de histograma:</strong> Examinar distribución de distancias entre puntos</li>
-                    <li><strong>Validación cruzada:</strong> Probar múltiples valores y medir estabilidad</li>
-                </ul>
-
-                <h4>2. Selección de MinPts:</h4>
-                <ul>
-                    <li><strong>Regla empírica:</strong> MinPts ≥ dimensionalidad + 1</li>
-                    <li><strong>Para 2D:</strong> MinPts = 4 es un buen punto de partida</li>
-                    <li><strong>Datos con ruido:</strong> Valores más altos (5-10) son más robustos</li>
-                </ul>
-
-                <h4>3. Alternativas Menos Sensibles:</h4>
-                <ul>
-                    <li><strong>OPTICS:</strong> Versión extendida que explora múltiples valores de epsilon</li>
-                    <li><strong>HDBSCAN:</strong> Variante jerárquica más robusta</li>
-                    <li><strong>Mean Shift:</strong> Algoritmo basado en densidad sin parámetros fijos</li>
-                </ul>
-            </div>
-
-            <div class="answer-section">
-                <h3>📝 Conclusión Final</h3>
-                <p>La <strong>alta sensibilidad</strong> de DBSCAN a sus parámetros es tanto una fortaleza como una debilidad:</p>
+                <h4>Método del K-distance plot para epsilon:</h4>
+                <ol>
+                    <li>Calcular distancia al k-ésimo vecino más cercano</li>
+                    <li>Ordenar distancias de forma descendente</li>
+                    <li>Buscar "codo" en la curva (punto de inflexión)</li>
+                    <li>El valor del codo sugiere epsilon óptimo</li>
+                </ol>
                 
-                <h4>🔴 Desventajas:</h4>
+                <h4>Heurísticas para minPts:</h4>
                 <ul>
-                    <li>Requiere experimentación cuidadosa con parámetros</li>
-                    <li>Resultados pueden ser inconsistentes</li>
-                    <li>Dificulta la automatización del proceso</li>
+                    <li><strong>Datos 2D:</strong> minPts = 4 (regla general)</li>
+                    <li><strong>Datos n-D:</strong> minPts ≥ 2 × dimensiones</li>
+                    <li><strong>Datos con mucho ruido:</strong> Incrementar minPts</li>
+                    <li><strong>Clusters pequeños esperados:</strong> Reducir minPts cuidadosamente</li>
                 </ul>
-
-                <h4>🟢 Ventajas:</h4>
-                <ul>
-                    <li>Permite ajuste fino para casos específicos</li>
-                    <li>Mayor control sobre la granularidad del clustering</li>
-                    <li>Puede adaptarse a diferentes densidades locales</li>
-                </ul>
-
-                <p><strong>Recomendación:</strong> Usar DBSCAN cuando se tenga buen conocimiento del dominio y tiempo para optimizar parámetros, o considerar alternativas más robustas como HDBSCAN para aplicaciones automatizadas.</p>
+                
+                <p><strong>Recomendación:</strong> Siempre validar resultados con conocimiento del dominio y métricas de calidad como silhouette score.</p>
             </div>
-        </div>
-        
-        <div class="back-button-container">
-            <button class="back-button" onclick="history.back()">
-                Volver a la página anterior
-            </button>
+            
+            <div class="back-button-container">
+                <button class="back-button" onclick="history.back()">
+                    Volver a la página anterior
+                </button>
+            </div>
         </div>
     </div>
 

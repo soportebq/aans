@@ -1,3 +1,4 @@
+
 * {
     margin: 0;
     padding: 0;
@@ -251,7 +252,7 @@ body {
 .progress-bar-fill {
     height: 100%;
     background: linear-gradient(90deg, #27ae60, #2ecc71);
-    width: 40%; /*porcentaje  cantPreguntasCreadas de ToatalDepreguntas ejemplo: 7/20*100 =  preguntas = 40% */
+    width: 40%;
     transition: width 0.3s ease;
     display: flex;
     align-items: center;
@@ -289,25 +290,240 @@ body {
     transition: width 0.3s ease;
 }
 
-@media (max-width: 768px) {
+/* MEJORAS RESPONSIVE */
+
+/* Tablets (768px - 1024px) */
+@media (max-width: 1024px) {
     .container {
-        margin: 10px;
+        margin: 15px;
+        border-radius: 15px;
+    }
+    
+    .content {
+        padding: 30px;
+    }
+    
+    .module-content {
+        padding: 20px;
+    }
+    
+    .question-links {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    }
+}
+
+/* Móviles grandes (481px - 767px) */
+@media (max-width: 767px) {
+    body {
+        padding: 10px;
+    }
+    
+    .container {
+        margin: 5px;
         border-radius: 10px;
     }
     
     .header {
-        padding: 30px 20px;
+        padding: 25px 20px;
     }
     
     .header h1 {
         font-size: 2.2em;
+        line-height: 1.2;
+    }
+    
+    .header p {
+        font-size: 1.1em;
     }
     
     .content {
         padding: 20px;
     }
     
+    .module {
+        margin-bottom: 30px;
+    }
+    
+    .module-header {
+        padding: 20px;
+        font-size: 1.2em;
+    }
+    
+    .module-content {
+        padding: 15px;
+    }
+    
+    .topic {
+        padding: 15px;
+    }
+    
+    .topic h3 {
+        font-size: 1.2em;
+    }
+    
     .question-links {
         grid-template-columns: 1fr;
+        gap: 10px;
+    }
+    
+    .external-links {
+        gap: 6px;
+    }
+    
+    .external-link {
+        padding: 10px;
+        font-size: 0.85em;
+    }
+    
+    .question-link {
+        padding: 15px 12px;
+        font-size: 0.85em;
+    }
+    
+    .footer {
+        padding: 25px 20px;
+    }
+    
+    /* Desactivar hover effects en móviles */
+    .module:hover {
+        transform: none;
+    }
+    
+    .question-link:hover {
+        transform: none;
+    }
+    
+    .external-link:hover {
+        transform: none;
+    }
+}
+
+/* Móviles pequeños (320px - 480px) */
+@media (max-width: 480px) {
+    body {
+        padding: 5px;
+    }
+    
+    .container {
+        margin: 0;
+        border-radius: 8px;
+    }
+    
+    .header {
+        padding: 20px 15px;
+    }
+    
+    .header h1 {
+        font-size: 1.8em;
+    }
+    
+    .header p {
+        font-size: 1em;
+    }
+    
+    .content {
+        padding: 15px;
+    }
+    
+    .module-header {
+        padding: 15px;
+        font-size: 1.1em;
+    }
+    
+    .module-content {
+        padding: 12px;
+    }
+    
+    .topic {
+        padding: 12px;
+        margin-bottom: 20px;
+    }
+    
+    .topic h3 {
+        font-size: 1.1em;
+        margin-bottom: 12px;
+    }
+    
+    .subtopics li {
+        padding: 6px 0;
+        font-size: 0.9em;
+    }
+    
+    .links-section {
+        padding: 12px;
+    }
+    
+    .questions-section {
+        padding: 15px;
+    }
+    
+    .progress-section {
+        padding: 12px;
+    }
+    
+    .external-link {
+        padding: 8px 10px;
+        font-size: 0.8em;
+    }
+    
+    .question-link {
+        padding: 12px 10px;
+        font-size: 0.8em;
+    }
+    
+    .progress-bar-fill {
+        font-size: 10px;
+    }
+    
+    .footer {
+        padding: 20px 15px;
+    }
+    
+    .footer h3 {
+        font-size: 1.3em;
+    }
+}
+
+/* Mejoras de accesibilidad y usabilidad */
+@media (hover: none) {
+    .module:hover,
+    .question-link:hover,
+    .external-link:hover {
+        transform: none;
+    }
+}
+
+/* Orientación horizontal en móviles */
+@media (max-width: 767px) and (orientation: landscape) {
+    .header {
+        padding: 20px;
+    }
+    
+    .header h1 {
+        font-size: 2em;
+    }
+    
+    .content {
+        padding: 20px;
+    }
+}
+
+/* Optimizaciones para pantallas muy pequeñas */
+@media (max-width: 360px) {
+    .header h1 {
+        font-size: 1.6em;
+    }
+    
+    .module-header {
+        font-size: 1em;
+    }
+    
+    .topic h3 {
+        font-size: 1em;
+    }
+    
+    .external-link,
+    .question-link {
+        font-size: 0.75em;
     }
 }

@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, minimum-scale=1.0, maximum-scale=3.0">
     <title>DBSCAN Pregunta 8: Complejidad Temporal</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
     <link rel="stylesheet" href="dbscan.css">
@@ -18,258 +18,368 @@
             <div class="question-box q8">
                 <h2>¿Cuál es la complejidad temporal del algoritmo DBSCAN?</h2>
                 <p><strong>Contexto:</strong> La complejidad temporal determina qué tan eficiente es el algoritmo conforme aumenta el tamaño del dataset y depende de las estructuras de datos utilizadas.</p>
+                <ul>
+                    <li><strong>Implementación naive:</strong> O(N²) sin estructuras auxiliares</li>
+                    <li><strong>Implementación optimizada:</strong> O(N log N) con índices espaciales</li>
+                    <li><strong>Factores determinantes:</strong> Estructura de datos, distribución, parámetros</li>
+                </ul>
             </div>
 
             <div class="answer-section">
                 <h3>Respuesta: La complejidad temporal varía según la implementación</h3>
-                <p><strong>Mejor caso:</strong> O(N log N) con estructuras de indexación espacial</p>
-                <p><strong>Caso promedio:</strong> Depende de los datos y la implementación</p>
-                <p><strong>Peor caso:</strong> O(N²) sin estructuras de indexación o datos degenerados</p>
-            </div>
-
-            <div class="complexity-grid">
-                <div class="complexity-card best-case">
-                    <h4>🟢 Mejor Caso: O(N log N)</h4>
-                    <div class="formula-display">
-                        O(N log N)
-                    </div>
-                    <p><strong>Condiciones:</strong></p>
-                    <ul>
-                        <li>Uso de índices espaciales (KD-tree, R-tree)</li>
-                        <li>Consultas de vecindario en tiempo logarítmico</li>
-                        <li>Datos bien distribuidos</li>
-                        <li>Implementación optimizada</li>
-                    </ul>
-                    <p><strong>Escenario ideal:</strong> Datasets grandes con estructura espacial eficiente</p>
-                </div>
-
-                <div class="complexity-card worst-case">
-                    <h4>🔴 Peor Caso: O(N²)</h4>
-                    <div class="formula-display">
-                        O(N²)
-                    </div>
-                    <p><strong>Condiciones:</strong></p>
-                    <ul>
-                        <li>Sin estructuras de indexación</li>
-                        <li>Datos degenerados o muy densos</li>
-                        <li>Consultas de vecindario lineales</li>
-                        <li>Implementación naive</li>
-                    </ul>
-                    <p><strong>Escenario problemático:</strong> Búsqueda exhaustiva de vecinos para cada punto</p>
-                </div>
-
-                <div class="complexity-card average-case">
-                    <h4>🟡 Caso Promedio: Variable</h4>
-                    <div class="formula-display">
-                        O(N log N) ↔ O(N²)
-                    </div>
-                    <p><strong>Factores determinantes:</strong></p>
-                    <ul>
-                        <li>Distribución de los datos</li>
-                        <li>Valores de ε y MinPts</li>
-                        <li>Estructuras de datos utilizadas</li>
-                        <li>Calidad de la implementación</li>
-                    </ul>
-                    <p><strong>Realidad práctica:</strong> Depende heavily de la implementación específica</p>
-                </div>
+                
+                <h4>Complejidades según implementación:</h4>
+                <p><strong>Mejor caso:</strong> O(N log N) con estructuras de indexación espacial (KD-tree, R-tree)</p>
+                <p><strong>Caso promedio:</strong> O(N log N) en implementaciones modernas optimizadas</p>
+                <p><strong>Peor caso:</strong> O(N²) sin estructuras de indexación o con datos degenerados</p>
+                
+                <h4>Factores determinantes:</h4>
+                <p>La eficiencia depende críticamente de la <strong>estructura de indexación</strong> utilizada para las consultas de vecindario, la <strong>distribución de los datos</strong>, y los <strong>valores de los parámetros</strong> ε y MinPts.</p>
             </div>
 
             <div class="demo-section">
-                <h3>🎮 Demostración Interactiva: Impacto de la Complejidad</h3>
-                <p>Observa cómo diferentes tamaños de dataset afectan el tiempo de ejecución:</p>
+                <h3>🔬 Demostración Interactiva: Impacto de la Complejidad</h3>
+                <p><strong>Experimenta con diferentes tamaños de dataset y observa el impacto dramático:</strong></p>
                 
-                <div class="controls">
+                <div class="controls-container">
                     <div class="control-group">
-                        <label>Tamaño Dataset (N)</label>
-                        <input type="range" id="dataset-size" min="100" max="2000" value="500" step="100">
-                        <span id="size-value">500</span> puntos
+                        <label for="dataset-size">Tamaño del Dataset: <span id="size-value">500</span> puntos</label>
+                        <input type="range" id="dataset-size" min="100" max="5000" value="500" step="100">
                     </div>
+                    
                     <div class="control-group">
-                        <label>Tipo de Implementación</label>
+                        <label for="implementation-type">Implementación:</label>
                         <select id="implementation-type">
-                            <option value="indexed">Con Índice Espacial (KD-tree)</option>
-                            <option value="naive">Sin Índice (Búsqueda Naive)</option>
-                            <option value="optimized">Optimizada (Scikit-learn)</option>
+                            <option value="indexed">Con Índice Espacial - O(N log N)</option>
+                            <option value="naive">Sin Índice (Naive) - O(N²)</option>
                         </select>
                     </div>
+                    
                     <div class="control-group">
-                        <label>Epsilon (ε)</label>
+                        <label for="eps-slider">Epsilon: <span id="eps-value">40</span></label>
                         <input type="range" id="eps-slider" min="20" max="80" value="40" step="10">
-                        <span id="eps-value">40</span>
                     </div>
                 </div>
                 
                 <svg id="complexity-demo" width="650" height="400"></svg>
                 
-                <div class="stats-display">
-                    <div class="stat-item">
-                        <div class="stat-value" id="current-size">500</div>
-                        <div class="stat-label">Puntos (N)</div>
+                <div class="results-info">
+                    <div class="result-item">
+                        <strong>Puntos (N):</strong> <span id="current-size">500</span>
                     </div>
-                    <div class="stat-item">
-                        <div class="stat-value" id="complexity-order">O(N log N)</div>
-                        <div class="stat-label">Complejidad</div>
+                    <div class="result-item">
+                        <strong>Complejidad:</strong> <span id="complexity-order">O(N log N)</span>
                     </div>
-                    <div class="stat-item">
-                        <div class="stat-value" id="estimated-ops">4,500</div>
-                        <div class="stat-label">Operaciones Est.</div>
+                    <div class="result-item">
+                        <strong>Operaciones Est.:</strong> <span id="estimated-ops">4,500</span>
                     </div>
-                    <div class="stat-item">
-                        <div class="stat-value" id="execution-time">45ms</div>
-                        <div class="stat-label">Tiempo Est.</div>
+                    <div class="result-item">
+                        <strong>Tiempo Est.:</strong> <span id="execution-time">45ms</span>
                     </div>
-                    <div class="stat-item">
-                        <div class="stat-value" id="memory-usage">2.4MB</div>
-                        <div class="stat-label">Memoria Est.</div>
+                    <div class="result-item">
+                        <strong>Memoria Est.:</strong> <span id="memory-usage">2.4MB</span>
                     </div>
-                    <div class="stat-item">
-                        <div class="stat-value" id="scalability-rating">Excelente</div>
-                        <div class="stat-label">Escalabilidad</div>
+                    <div class="result-item">
+                        <strong>Escalabilidad:</strong> <span id="scalability-rating">Excelente</span>
                     </div>
                 </div>
             </div>
 
-            <div class="comparison-section">
-                <h3>📊 Comparación de Complejidades</h3>
+            <div class="comparison-section base-card">
+                <h3>📊 Comparación Visual de Complejidades</h3>
                 <svg id="complexity-comparison" width="650" height="300"></svg>
-                <p><small>Gráfico mostrando cómo escala cada implementación con el tamaño del dataset</small></p>
+                <p><small>Gráfico mostrando cómo escala cada implementación con el tamaño del dataset. La diferencia se vuelve dramática con datasets grandes.</small></p>
+            </div>
+
+            <div class="complexity-grid">
+                <div class="complexity-card best-case base-card">
+                    <h4>🟢 Mejor Caso: O(N log N)</h4>
+                    <div class="formula-display">
+                        O(N log N)
+                    </div>
+                    <p><strong>Condiciones requeridas:</strong></p>
+                    <ul>
+                        <li>Uso de índices espaciales (KD-tree, R-tree)</li>
+                        <li>Consultas de vecindario en tiempo logarítmico</li>
+                        <li>Datos bien distribuidos en el espacio</li>
+                        <li>Implementación optimizada profesional</li>
+                        <li>Parámetros balanceados (ε moderado)</li>
+                    </ul>
+                    <p><strong>Escenario ideal:</strong> Datasets grandes con distribución espacial uniforme y librerías optimizadas como scikit-learn.</p>
+                </div>
+
+                <div class="complexity-card worst-case base-card">
+                    <h4>🔴 Peor Caso: O(N²)</h4>
+                    <div class="formula-display">
+                        O(N²)
+                    </div>
+                    <p><strong>Condiciones que lo causan:</strong></p>
+                    <ul>
+                        <li>Sin estructuras de indexación espacial</li>
+                        <li>Búsqueda de vecinos brute-force</li>
+                        <li>Datos degenerados o mal distribuidos</li>
+                        <li>Implementación naive sin optimizaciones</li>
+                        <li>Epsilon muy grande (muchos vecinos)</li>
+                    </ul>
+                    <p><strong>Escenario problemático:</strong> Implementaciones caseras sin conocimiento de algoritmos de indexación espacial.</p>
+                </div>
+
+                <div class="complexity-card average-case base-card">
+                    <h4>🟡 Caso Práctico: O(N log N)</h4>
+                    <div class="formula-display">
+                        O(N log N)
+                    </div>
+                    <p><strong>Implementaciones modernas:</strong></p>
+                    <ul>
+                        <li>Scikit-learn: Automáticamente optimizada</li>
+                        <li>WEKA: Incluye índices espaciales</li>
+                        <li>R (dbscan): Implementación eficiente</li>
+                        <li>Spark MLlib: Paralelizada y optimizada</li>
+                        <li>Bibliotecas especializadas en clustering</li>
+                    </ul>
+                    <p><strong>Escenario real:</strong> La mayoría de aplicaciones prácticas logran complejidad logarítmica con herramientas modernas.</p>
+                </div>
             </div>
 
             <div class="factors-grid">
-                <div class="factor-card indexing-factor">
+                <div class="factor-card indexing-factor base-card">
                     <h4>🌳 Estructuras de Indexación Espacial</h4>
-                    <p><strong>KD-Tree (K-Dimensional Tree):</strong></p>
+                    
+                    <h5>KD-Tree (K-Dimensional Tree):</h5>
                     <ul>
                         <li>Búsqueda de vecinos en O(log N)</li>
-                        <li>Eficiente para dimensiones < 10</li>
-                        <li>Partición recursiva del espacio</li>
-                        <li>Memoria adicional: O(N)</li>
+                        <li>Eficiente para dimensiones bajas (2D-6D)</li>
+                        <li>Rendimiento degrada en alta dimensionalidad</li>
+                        <li>Ideal para datos geográficos y espaciales</li>
                     </ul>
-                    <p><strong>R-Tree (Rectangle Tree):</strong></p>
+                    
+                    <h5>R-Tree (Rectangle Tree):</h5>
                     <ul>
-                        <li>Optimizado para consultas espaciales</li>
-                        <li>Maneja regiones rectangulares</li>
-                        <li>Mejor para datos geográficos</li>
-                        <li>Complejidad: O(log N) por consulta</li>
+                        <li>Optimizado para consultas geométricas</li>
+                        <li>Excelente para datos geográficos</li>
+                        <li>Maneja regiones rectangulares eficientemente</li>
+                        <li>Usado en sistemas GIS profesionales</li>
                     </ul>
-                </div>
-
-                <div class="factor-card implementation-factor">
-                    <h4>⚙️ Factores de Implementación</h4>
-                    <p><strong>Algoritmo Naive:</strong></p>
+                    
+                    <h5>Ball-Tree:</h5>
                     <ul>
-                        <li>Búsqueda exhaustiva O(N) por punto</li>
-                        <li>Complejidad total: O(N²)</li>
-                        <li>Simple pero ineficiente</li>
-                        <li>No escalable para datasets grandes</li>
-                    </ul>
-                    <p><strong>Implementación Optimizada:</strong></p>
-                    <ul>
-                        <li>Uso de estructuras de datos eficientes</li>
-                        <li>Técnicas de poda y optimización</li>
-                        <li>Paralelización cuando es posible</li>
-                        <li>Gestión inteligente de memoria</li>
+                        <li>Eficiente en alta dimensionalidad</li>
+                        <li>Usa métricas de distancia generalizadas</li>
+                        <li>Mejor que KD-tree para >10 dimensiones</li>
+                        <li>Implementado en scikit-learn</li>
                     </ul>
                 </div>
 
-                <div class="factor-card data-factor">
-                    <h4>📈 Características de los Datos</h4>
-                    <p><strong>Distribución Espacial:</strong></p>
+                <div class="factor-card distribution-factor base-card">
+                    <h4>📈 Distribución de Datos</h4>
+                    
+                    <h5>✅ Distribuciones Favorables:</h5>
                     <ul>
-                        <li>Datos bien distribuidos: Mejor rendimiento</li>
-                        <li>Datos agrupados: Puede degradar performance</li>
-                        <li>Dimensionalidad: Afecta eficiencia de índices</li>
-                        <li>Densidad variable: Impacta consultas</li>
+                        <li><strong>Uniforme:</strong> Índices espaciales muy eficientes</li>
+                        <li><strong>Clusters separados:</strong> Consultas rápidas</li>
+                        <li><strong>Baja dimensionalidad:</strong> KD-tree optimal</li>
+                        <li><strong>Densidad moderada:</strong> Balance ideal</li>
                     </ul>
-                    <p><strong>Parámetros DBSCAN:</strong></p>
+                    
+                    <h5>❌ Distribuciones Problemáticas:</h5>
                     <ul>
-                        <li>ε pequeño: Menos vecinos, más rápido</li>
-                        <li>ε grande: Más vecinos, más lento</li>
-                        <li>MinPts: Afecta número de iteraciones</li>
-                        <li>Forma de clusters: Influye en expansión</li>
+                        <li><strong>Muy agrupada:</strong> Muchas consultas densas</li>
+                        <li><strong>Lineal degenerada:</strong> Índices ineficientes</li>
+                        <li><strong>Alta dimensionalidad:</strong> "Maldición dimensional"</li>
+                        <li><strong>Extremadamente dispersa:</strong> Búsquedas infructuosas</li>
+                    </ul>
+                    
+                    <h5>🔧 Mitigaciones:</h5>
+                    <ul>
+                        <li>Normalización y preprocesamiento</li>
+                        <li>Selección de estructura adecuada</li>
+                        <li>Sampling para datasets masivos</li>
+                        <li>Paralelización cuando sea posible</li>
+                    </ul>
+                </div>
+
+                <div class="factor-card parameters-factor base-card">
+                    <h4>⚙️ Impacto de Parámetros</h4>
+                    
+                    <h5>Efecto de Epsilon (ε):</h5>
+                    <ul>
+                        <li><strong>ε pequeño:</strong> Pocas consultas, más rápido</li>
+                        <li><strong>ε grande:</strong> Muchos vecinos, más lento</li>
+                        <li><strong>ε desbalanceado:</strong> Consultas ineficientes</li>
+                        <li><strong>ε adaptativo:</strong> Optimización dinámica</li>
+                    </ul>
+                    
+                    <h5>Efecto de MinPts:</h5>
+                    <ul>
+                        <li><strong>MinPts bajo:</strong> Menos verificaciones</li>
+                        <li><strong>MinPts alto:</strong> Más comparaciones por punto</li>
+                        <li><strong>Relación con ε:</strong> Parámetros interdependientes</li>
+                        <li><strong>Optimización conjunta:</strong> Balance crítico</li>
+                    </ul>
+                    
+                    <h5>Estrategias de Optimización:</h5>
+                    <ul>
+                        <li>Análisis exploratorio para ε óptimo</li>
+                        <li>Heurísticas dimensión-dependientes</li>
+                        <li>Validación cruzada para parámetros</li>
+                        <li>Monitoreo de rendimiento en producción</li>
                     </ul>
                 </div>
             </div>
 
-            <div class="practical-examples">
-                <h3>🏭 Ejemplos Prácticos de Rendimiento</h3>
-                <div class="example-grid">
+            <div class="comparison-section base-card">
+                <h4>📊 Comparación de Escalabilidad</h4>
+                
+                <div class="scaling-examples">
+                    <div class="scaling-example">
+                        <h5>Dataset Pequeño (1,000 puntos):</h5>
+                        <ul>
+                            <li><strong>O(N²):</strong> 1M operaciones, ~2 segundos</li>
+                            <li><strong>O(N log N):</strong> 10K operaciones, ~0.02 segundos</li>
+                            <li><strong>Diferencia:</strong> 100x más rápido con índices</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="scaling-example">
+                        <h5>Dataset Mediano (10,000 puntos):</h5>
+                        <ul>
+                            <li><strong>O(N²):</strong> 100M operaciones, ~200 segundos</li>
+                            <li><strong>O(N log N):</strong> 130K operaciones, ~0.3 segundos</li>
+                            <li><strong>Diferencia:</strong> 650x más rápido con índices</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="scaling-example">
+                        <h5>Dataset Grande (100,000 puntos):</h5>
+                        <ul>
+                            <li><strong>O(N²):</strong> 10B operaciones, ~5 horas</li>
+                            <li><strong>O(N log N):</strong> 1.7M operaciones, ~5 segundos</li>
+                            <li><strong>Diferencia:</strong> 3600x más rápido con índices</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="practical-examples base-card">
+                <h4>🏭 Ejemplos Prácticos de Rendimiento</h4>
+                
+                <div class="examples-grid">
                     <div class="example-card">
-                        <h6>🗺️ Datos Geográficos</h6>
-                        <p><strong>Dataset:</strong> 1M puntos GPS</p>
+                        <h5>🗺️ Datos Geográficos</h5>
+                        <p><strong>Dataset:</strong> 1M puntos GPS de taxis</p>
                         <p><strong>Implementación:</strong> R-tree + DBSCAN optimizado</p>
                         <p><strong>Complejidad:</strong> O(N log N)</p>
                         <p><strong>Tiempo:</strong> ~3 minutos</p>
                         <p><strong>Memoria:</strong> 250MB</p>
+                        <p><strong>Uso:</strong> Detección de zonas de alta demanda</p>
                     </div>
                     
                     <div class="example-card">
-                        <h6>🧬 Datos Genómicos</h6>
-                        <p><strong>Dataset:</strong> 100K secuencias</p>
+                        <h5>🧬 Análisis Genómico</h5>
+                        <p><strong>Dataset:</strong> 100K secuencias de ADN</p>
                         <p><strong>Implementación:</strong> Métrica personalizada + KD-tree</p>
                         <p><strong>Complejidad:</strong> O(N log N)</p>
                         <p><strong>Tiempo:</strong> ~45 segundos</p>
                         <p><strong>Memoria:</strong> 80MB</p>
+                        <p><strong>Uso:</strong> Clasificación de variantes genéticas</p>
                     </div>
                     
                     <div class="example-card">
-                        <h6>📊 Análisis de Imágenes</h6>
-                        <p><strong>Dataset:</strong> 50K píxeles</p>
-                        <p><strong>Implementación:</strong> Sin índice (naive)</p>
+                        <h5>📊 Procesamiento de Imágenes</h5>
+                        <p><strong>Dataset:</strong> 500K píxeles de imagen médica</p>
+                        <p><strong>Implementación:</strong> Sin índice (implementación naive)</p>
                         <p><strong>Complejidad:</strong> O(N²)</p>
-                        <p><strong>Tiempo:</strong> ~8 minutos</p>
+                        <p><strong>Tiempo:</strong> ~2 horas</p>
                         <p><strong>Memoria:</strong> 400MB</p>
+                        <p><strong>Problema:</strong> Implementación no optimizada</p>
                     </div>
                     
                     <div class="example-card">
-                        <h6>🏪 Segmentación Clientes</h6>
-                        <p><strong>Dataset:</strong> 10K usuarios</p>
-                        <p><strong>Implementación:</strong> Scikit-learn optimizada</p>
+                        <h5>🏪 Segmentación de Clientes</h5>
+                        <p><strong>Dataset:</strong> 50K perfiles de usuarios</p>
+                        <p><strong>Implementación:</strong> Scikit-learn (automáticamente optimizada)</p>
                         <p><strong>Complejidad:</strong> O(N log N)</p>
-                        <p><strong>Tiempo:</strong> ~2 segundos</p>
-                        <p><strong>Memoria:</strong> 15MB</p>
+                        <p><strong>Tiempo:</strong> ~8 segundos</p>
+                        <p><strong>Memoria:</strong> 25MB</p>
+                        <p><strong>Uso:</strong> Marketing personalizado</p>
                     </div>
                 </div>
             </div>
 
-            <div class="optimization-tips">
-                <h3>🚀 Consejos de Optimización</h3>
+            <div class="optimization-section base-card">
+                <h4>🚀 Guía de Optimización Práctica</h4>
                 
-                <h4>1. Selección de Estructura de Datos:</h4>
-                <ul>
-                    <li><strong>Dimensiones bajas (2D-4D):</strong> Usar KD-tree</li>
-                    <li><strong>Datos geográficos:</strong> Usar R-tree o Quad-tree</li>
-                    <li><strong>Alta dimensionalidad:</strong> Considerar Ball-tree</li>
-                    <li><strong>Datasets pequeños:</strong> Búsqueda brute-force puede ser suficiente</li>
-                </ul>
-
-                <h4>2. Optimización de Parámetros:</h4>
-                <ul>
-                    <li><strong>ε conservador:</strong> Valores más pequeños = menos vecinos = más rápido</li>
-                    <li><strong>MinPts apropiado:</strong> Evitar valores extremadamente altos</li>
-                    <li><strong>Preprocesamiento:</strong> Normalizar datos para mejor distribución</li>
-                    <li><strong>Sampling:</strong> Usar muestras para datasets masivos</li>
-                </ul>
-
-                <h4>3. Consideraciones de Implementación:</h4>
-                <ul>
-                    <li><strong>Paralelización:</strong> Aprovechar múltiples cores cuando sea posible</li>
-                    <li><strong>Gestión de memoria:</strong> Evitar copias innecesarias de datos</li>
-                    <li><strong>Algoritmos aproximados:</strong> Para datasets extremadamente grandes</li>
-                    <li><strong>Librerías optimizadas:</strong> Usar implementaciones profesionales (scikit-learn)</li>
-                </ul>
+                <div class="optimization-steps">
+                    <div class="step">
+                        <span class="step-number">1</span>
+                        <div class="step-content">
+                            <h5>Selección de Estructura de Datos</h5>
+                            <ul>
+                                <li><strong>2D-4D:</strong> KD-tree (más eficiente)</li>
+                                <li><strong>Geográficos:</strong> R-tree o Quad-tree</li>
+                                <li><strong>Alta dimensionalidad:</strong> Ball-tree</li>
+                                <li><strong>Datasets <1K:</strong> Brute-force acceptable</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="step">
+                        <span class="step-number">2</span>
+                        <div class="step-content">
+                            <h5>Optimización de Parámetros</h5>
+                            <ul>
+                                <li><strong>ε conservador:</strong> Valores menores = menos operaciones</li>
+                                <li><strong>MinPts balanceado:</strong> Evitar extremos</li>
+                                <li><strong>Normalización:</strong> Mejorar distribución espacial</li>
+                                <li><strong>Sampling:</strong> Para datasets >1M puntos</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="step">
+                        <span class="step-number">3</span>
+                        <div class="step-content">
+                            <h5>Consideraciones de Implementación</h5>
+                            <ul>
+                                <li><strong>Librerías optimizadas:</strong> Scikit-learn, WEKA</li>
+                                <li><strong>Paralelización:</strong> Para datasets masivos</li>
+                                <li><strong>Gestión de memoria:</strong> Evitar copias innecesarias</li>
+                                <li><strong>Profiling:</strong> Identificar cuellos de botella</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <div class="highlight-box">
-                <h4>Factores Clave que Determinan la Complejidad</h4>
-                <p><strong>La complejidad temporal de DBSCAN no es fija</strong> y depende críticalment</p>
-                <ul>
-                    <li><strong>Estructura de indexación:</strong> El factor más importante para la eficiencia</li>
-                    <li><strong>Distribución de datos:</strong> Datos degenerados pueden degradar el rendimiento</li>
-                    <li><strong>Parámetros del algoritmo:</strong> ε y MinPts afectan el número de operaciones</li>
-                    <li><strong>Dimensionalidad:</strong> Espacios de alta dimensión complican la indexación</li>
-                    <li><strong>Calidad de implementación:</strong> Las optimizaciones marcan gran diferencia</li>
-                </ul>
+            <div class="highlight-box base-card">
+                <h4>🎯 Factores Clave que Determinan la Complejidad</h4>
+                <p><strong>La complejidad temporal de DBSCAN no es fija</strong> y depende críticamente de varios factores interrelacionados:</p>
+                <div class="key-factors">
+                    <div class="key-factor">
+                        <h5>🏗️ Estructura de Indexación</h5>
+                        <p>El factor más importante. Índices espaciales pueden reducir la complejidad de O(N²) a O(N log N).</p>
+                    </div>
+                    
+                    <div class="key-factor">
+                        <h5>📊 Distribución de Datos</h5>
+                        <p>Datos degenerados o mal distribuidos pueden degradar el rendimiento incluso con índices.</p>
+                    </div>
+                    
+                    <div class="key-factor">
+                        <h5>⚙️ Parámetros del Algoritmo</h5>
+                        <p>ε y MinPts afectan directamente el número de operaciones de vecindario realizadas.</p>
+                    </div>
+                    
+                    <div class="key-factor">
+                        <h5>📐 Dimensionalidad</h5>
+                        <p>Espacios de alta dimensión complican la indexación y pueden requerir estructuras especializadas.</p>
+                    </div>
+                    
+                    <div class="key-factor">
+                        <h5>💻 Calidad de Implementación</h5>
+                        <p>Las optimizaciones de bajo nivel y algoritmos auxiliares marcan una gran diferencia.</p>
+                    </div>
+                </div>
             </div>
 
             <div class="answer-section">
@@ -279,7 +389,7 @@
                 <ul>
                     <li><strong>Mejor caso:</strong> O(N log N) con índices espaciales eficientes</li>
                     <li><strong>Peor caso:</strong> O(N²) sin estructuras de indexación</li>
-                    <li><strong>Caso práctico:</strong> Generalmente O(N log N) con implementaciones modernas</li>
+                    <li><strong>Caso práctico:</strong> O(N log N) con implementaciones modernas</li>
                 </ul>
 
                 <h4>🏗️ Factores Determinantes:</h4>
@@ -291,14 +401,14 @@
                 </ul>
 
                 <h4>💡 Recomendación Práctica:</h4>
-                <p><strong>Para uso real:</strong> Usar implementaciones optimizadas como scikit-learn que alcanzan O(N log N) en la mayoría de casos prácticos, evitando implementaciones naive que resultan en O(N²).</p>
+                <p><strong>Para uso real:</strong> Utilizar implementaciones optimizadas como scikit-learn que automáticamente seleccionan estructuras de indexación apropiadas y alcanzan O(N log N) en la mayoría de casos prácticos, evitando implementaciones naive que resultan en O(N²).</p>
             </div>
-        </div>
-        
-        <div class="back-button-container">
-            <button class="back-button" onclick="history.back()">
-                Volver a la página anterior
-            </button>
+            
+            <div class="back-button-container">
+                <button class="back-button" onclick="history.back()">
+                    Volver a la página anterior
+                </button>
+            </div>
         </div>
     </div>
 
